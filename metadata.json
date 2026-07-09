@@ -1,0 +1,6 @@
+{
+  "name": "Stadium Digital Command Center",
+  "description": "An AI-powered stadium digital command center and copilot serving fans, volunteers, and organizers with real-time prediction and recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

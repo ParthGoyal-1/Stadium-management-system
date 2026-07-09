@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --color-slate-850: #1a2333;
+}
+
+/* Perfect Modern Light Theme Styles */
+.light {
+  /* Layout and card backgrounds reversed */
+  --color-slate-950: #f8fafc; /* Primary app canvas background (slate-50) */
+  --color-slate-900: #ffffff; /* Container and card background (white) */
+  --color-slate-850: #f1f5f9; /* Intermediate container background (slate-100) */
+  --color-slate-800: #e2e8f0; /* Borders, dividing lines, subtle outlines (slate-200) */
+  --color-slate-700: #cbd5e1; /* Hover borders or subtle tags (slate-300) */
+  --color-slate-600: #94a3b8; /* Disabled controls or light border accents (slate-400) */
+  --color-slate-500: #64748b; /* Muted label text, metadata, icons (slate-500) */
+  --color-slate-400: #475569; /* Intermediate description text, helper labels (slate-600) */
+  --color-slate-300: #334155; /* Secondary text, subtitle paragraphs (slate-700) */
+  --color-slate-200: #1e293b; /* Strong headers, item lists, body-weight text (slate-800) */
+  --color-slate-100: #0f172a; /* Main bold headings, prominent text, titles (slate-900) */
+  --color-slate-5: #020617;   /* Extremely dark fallback text */
+
+  /* Readability and Contrast optimizations for active highlights and icons */
+  --color-teal-950: #f0fdfa; /* Soft teal background tint (teal-50) */
+  --color-teal-900: #ccfbf1; /* Soft teal tag background (teal-100) */
+  --color-teal-800: #99f6e4; /* Selected tag border (teal-200) */
+  --color-teal-500: #0d9488; /* Highly legible primary teal accent (teal-600) */
+  --color-teal-400: #0f766e; /* Highly readable contrast teal text (teal-700) */
+  --color-teal-300: #115e59; /* Very dark contrast teal header (teal-800) */
+
+  --color-sky-950: #f0f9ff;  /* Soft sky blue background tint (sky-50) */
+  --color-sky-900: #e0f2fe;  /* Soft sky blue tag background (sky-100) */
+  --color-sky-500: #0284c7;  /* Legible primary sky accent (sky-600) */
+  --color-sky-400: #0369a1;  /* Highly readable contrast sky text (sky-700) */
+
+  --color-emerald-950: #f0fdf4; /* Safe green background tint (emerald-50) */
+  --color-emerald-900: #dcfce7; /* Safe green badge background (emerald-100) */
+  --color-emerald-500: #16a34a; /* Legible emerald accent (emerald-600) */
+  --color-emerald-400: #15803d; /* Highly readable green text (emerald-700) */
+  --color-emerald-300: #166534; /* Dark contrast green label (emerald-800) */
+
+  --color-amber-950: #fffbeb; /* Safe warning background tint (amber-50) */
+  --color-amber-900: #fef3c7; /* Safe warning badge background (amber-100) */
+  --color-amber-500: #d97706; /* Legible amber accent (amber-600) */
+  --color-amber-400: #b45309; /* Highly readable amber text (amber-700) */
+  --color-amber-300: #92400e; /* Dark contrast amber label (amber-800) */
+
+  --color-rose-950: #fff1f2;  /* Safe critical alert background tint (rose-50) */
+  --color-rose-900: #ffe4e6;  /* Safe critical badge background (rose-100) */
+  --color-rose-600: #e11d48;  /* Legible critical red accent (rose-600) */
+  --color-rose-500: #be123c;  /* Legible rose/red accent (rose-700) */
+  --color-rose-400: #9f1239;  /* Highly readable critical text (rose-800) */
+  --color-rose-300: #881337;  /* Dark contrast critical label (rose-900) */
+}
+
+/* Custom scrollbar adjustments for light mode */
+.light .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+}
+
+/* Custom Keyframe Animations for High Visual Polish */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom scrollbars for a clean tech look */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #334155;
+  border-radius: 20px;
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 8s linear infinite;
+}
