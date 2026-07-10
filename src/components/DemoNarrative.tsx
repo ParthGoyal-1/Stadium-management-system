@@ -114,7 +114,7 @@ interface DemoNarrativeProps {
   onResetDemo: () => void;
 }
 
-export default function DemoNarrative({
+const DemoNarrative = React.memo(function DemoNarrative({
   currentStepId,
   onStepChange,
   onResetDemo
@@ -158,6 +158,7 @@ export default function DemoNarrative({
           <div className="w-px h-4 bg-slate-800" />
 
           <button
+            aria-label="Previous Step"
             disabled={currentStepId === 1}
             onClick={() => onStepChange(currentStepId - 1)}
             className="p-1.5 rounded-lg bg-slate-950 hover:bg-slate-850 text-slate-400 hover:text-slate-200 disabled:opacity-40 border border-slate-800 transition"
@@ -170,6 +171,7 @@ export default function DemoNarrative({
           </span>
 
           <button
+            aria-label="Next Step"
             disabled={currentStepId === DEMO_STEPS.length}
             onClick={() => onStepChange(currentStepId + 1)}
             className="p-1.5 rounded-lg bg-teal-500 hover:bg-teal-600 text-slate-950 disabled:opacity-40 transition"
@@ -184,6 +186,7 @@ export default function DemoNarrative({
         {DEMO_STEPS.map((s) => (
           <button
             key={s.id}
+            aria-label={`Go to step ${s.id}`}
             onClick={() => onStepChange(s.id)}
             className={`flex-1 min-w-[32px] h-2 rounded-full transition-all duration-300 ${
               s.id === currentStepId
@@ -254,4 +257,6 @@ export default function DemoNarrative({
       </div>
     </div>
   );
-}
+})
+
+export default DemoNarrative;

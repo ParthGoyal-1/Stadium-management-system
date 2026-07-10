@@ -16,7 +16,7 @@ interface VolunteerProfileShiftControlProps {
  *
  * @component
  */
-export default function VolunteerProfileShiftControl({
+const VolunteerProfileShiftControl = React.memo(function VolunteerProfileShiftControl({
   volunteer,
   onUpdateStatus,
   addNotification
@@ -28,19 +28,19 @@ export default function VolunteerProfileShiftControl({
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-full bg-slate-950 border border-teal-500/40 flex items-center justify-center">
-            <User className="w-6 h-6 text-teal-400" />
+            <User className="w-6 h-6 text-teal-400" aria-hidden="true" />
           </div>
           <div>
             <h3 className="font-semibold text-slate-100 font-sans">{volunteer.name}</h3>
             <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
-              <Shield className="w-3.5 h-3.5 text-teal-400" />
+              <Shield className="w-3.5 h-3.5 text-teal-400" aria-hidden="true" />
               Primary Location: <b>{volunteer.location}</b>
             </p>
           </div>
         </div>
 
         {/* Shift Radio Button Toggles */}
-        <div className="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800">
+        <div className="flex bg-slate-950 p-1.5 rounded-xl border border-slate-800" role="radiogroup" aria-label="Shift status select">
           {(['Available', 'Busy', 'On Break'] as const).map((st) => (
             <button
               key={st}
@@ -48,7 +48,9 @@ export default function VolunteerProfileShiftControl({
                 onUpdateStatus(volunteer.id, st);
                 addNotification(`Shift status set to ${st}`, "info");
               }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
+              role="radio"
+              aria-checked={volunteer.status === st}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                 volunteer.status === st
                   ? st === 'Available' ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30"
                     : st === 'Busy' ? "bg-amber-500/10 text-amber-400 border border-amber-500/30"
@@ -63,4 +65,6 @@ export default function VolunteerProfileShiftControl({
       </div>
     </div>
   );
-}
+})
+
+export default VolunteerProfileShiftControl;

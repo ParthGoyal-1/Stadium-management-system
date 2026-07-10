@@ -1,14 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { StadiumState, Incident, Volunteer, UserRole } from "./types";
-import { INITIAL_STADIUM_STATE, SIMULATION_PRESETS } from "./data/mockStadium";
+import React, { useState, lazy, Suspense, useCallback } from "react";
+import { UserRole } from "./types";
 import StadiumVisualizer from "./components/StadiumVisualizer";
 import LiveTelemetryStream from "./components/LiveTelemetryStream";
-import FanApp from "./components/FanApp";
-import VolunteerApp from "./components/VolunteerApp";
+import DemoNarrative from "./components/DemoNarrative";
+import { ErrorBoundary } from "./components/ErrorBoundary";
+
+// Custom custom hooks for enterprise modularity
+import { useAppTheme } from "./hooks/useAppTheme";
+import { useNotifications } from "./hooks/useNotifications";
+import { useStadiumState } from "./hooks/useStadiumState";
+import { useRoleAccess } from "./hooks/useRoleAccess";
+import { useWalkthrough } from "./hooks/useWalkthrough";
+
+// Lazy loaded modules for performance optimization
+const FanApp = lazy(() => import("./components/FanApp"));
+const VolunteerApp = lazy(() => import("./components/VolunteerApp"));
 import OrganizerDashboard from "./components/OrganizerDashboard";
-import DemoNarrative, { DEMO_STEPS } from "./components/DemoNarrative";
 import AppGuidebook from "./components/AppGuidebook";
+
 import { Shield, Compass, Users, Cloud, Clock, CheckCircle2, AlertTriangle, Info, Moon, Sun, Settings, Check, X, Accessibility, Navigation, MessageSquare, Zap, Activity, BookOpen } from "lucide-react";
+
+const LoaderFallback = () => (
+  <div className="flex flex-col items-center justify-center py-12 px-4 text-center font-sans space-y-3 bg-slate-900/40 border border-slate-800 rounded-2xl w-full">
+    <div className="relative">
+      <div className="w-10 h-10 border-4 border-teal-500/10 border-t-teal-500 rounded-full animate-spin" />
+      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-teal-400 rounded-full animate-ping" />
+    </div>
+    <div className="text-xs font-mono text-teal-400">Loading Tactical Module...</div>
+  </div>
+);
 
 /**
  * Main application entry component for the AI Stadium Command Center.
@@ -18,212 +38,80 @@ import { Shield, Compass, Users, Cloud, Clock, CheckCircle2, AlertTriangle, Info
  * @component
  */
 export default function App() {
-  const [stadiumState, setStadiumState] = useState<StadiumState>(INITIAL_STADIUM_STATE);
-  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
-    const saved = localStorage.getItem("theme");
-    return (saved === "light" || saved === "dark") ? saved : "dark";
+  const { theme, setTheme, toggleTheme } = useAppTheme();
+  const { notifications, addSystemNotification } = useNotifications();
+  const [activeRole, setActiveRole] = useState<UserRole>("fan");
+
+  const {
+    stadiumState,
+    setStadiumState,
+    activePresetIndex,
+    setActivePresetIndex,
+    handleSelectPreset,
+    handleUpdateVolunteerStatus,
+    handleAddIncident,
+    handleResolveIncident,
+  } = useStadiumState(addSystemNotification);
+
+  const {
+    activeStepId,
+    setActiveStepId,
+    selectedSectorId,
+    setSelectedSectorId,
+    selectedGateId,
+    setSelectedGateId,
+    handleStepChange,
+    handleResetDemo,
+  } = useWalkthrough({
+    setStadiumState,
+    setActivePresetIndex,
+    setActiveRole,
+    addSystemNotification,
   });
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+  const {
+    isSettingsOpen,
+    setIsSettingsOpen,
+    pendingRole,
+    setPendingRole,
+    passwordInput,
+    setPasswordInput,
+    passwordError,
+    setPasswordError,
+    handlePasswordSubmit,
+  } = useRoleAccess({
+    onRoleChange: setActiveRole,
+    addSystemNotification,
+  });
+
   const [isGuidebookOpen, setIsGuidebookOpen] = useState(false);
-  const [pendingRole, setPendingRole] = useState<UserRole | null>(null);
-  const [passwordInput, setPasswordInput] = useState("");
-  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [activeFanTab, setActiveFanTab] = useState<number>(1);
   const [activeVolunteerTab, setActiveVolunteerTab] = useState<number>(1);
   const [activeOrganizerTab, setActiveOrganizerTab] = useState<number>(1);
 
-  /**
-   * Validates credentials before permitting access to restricted volunteer or organizer dashboards.
-   * Handles security logic with graceful visual hints for easy sandbox testing.
-   *
-   * @param {React.FormEvent} e Form submission event.
-   */
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pendingRole) return;
-    
-    const requiredPassword = pendingRole === "volunteer" ? "volunteer" : "organizer";
-    if (passwordInput.trim().toLowerCase() === requiredPassword) {
-      setActiveRole(pendingRole);
-      addSystemNotification(`Access Granted. Switched to ${pendingRole === 'volunteer' ? 'Volunteer' : 'Organizer'} Portal.`, "success");
-      setPendingRole(null);
-      setPasswordInput("");
-      setPasswordError(null);
-    } else {
-      setPasswordError(`Incorrect password. (Hint: password is "${requiredPassword}")`);
-    }
-  };
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (theme === "light") {
-      root.classList.add("light");
-    } else {
-      root.classList.remove("light");
-    }
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-
-  useEffect(() => {
-    if (!isSettingsOpen) {
-      setPendingRole(null);
-      setPasswordInput("");
-      setPasswordError(null);
-    }
-  }, [isSettingsOpen]);
-
-  const [activePresetIndex, setActivePresetIndex] = useState(0);
-  const [activeRole, setActiveRole] = useState<UserRole>("fan");
-  const [activeStepId, setActiveStepId] = useState(1);
-
-  // Telemetry map selection states
-  const [selectedSectorId, setSelectedSectorId] = useState<string | null>(null);
-  const [selectedGateId, setSelectedGateId] = useState<string | null>(null);
-
-  // System Notifications state (Toasts)
-  const [notifications, setNotifications] = useState<{ id: string; message: string; type: 'info' | 'success' | 'alert' }[]>([]);
-
-  // Centralized Step Synchronizer
-  /**
-   * Synchronizes the interactive walkthrough narrative steps.
-   * Dynamically alters active user portals, selects stadium simulation states,
-   * highlights specific stadium physical sectors, and logs progress notifications.
-   *
-   * @param {number} stepId ID of the narrative demo step to load.
-   */
-  const handleStepChange = (stepId: number) => {
-    setActiveStepId(stepId);
-    const step = DEMO_STEPS[stepId - 1];
-    if (step) {
-      // Auto-switch role
-      setActiveRole(step.role);
-
-      // Auto-set the correct stadium simulation preset state
-      if (step.presetIndex !== activePresetIndex) {
-        setActivePresetIndex(step.presetIndex);
-        setStadiumState(SIMULATION_PRESETS[step.presetIndex].state);
-      }
-
-      // Highlight map elements
-      setSelectedGateId(step.highlightGate);
-      setSelectedSectorId(step.highlightSector);
-
-      addSystemNotification(`Walkthrough sync: Guided to ${step.title}`, "success");
-    }
-  };
-
-  /**
-   * Resets the walkthrough narrative state back to step 1.
-   */
-  const handleResetDemo = () => {
-    handleStepChange(1);
-    addSystemNotification("Story walkthrough restarted.", "info");
-  };
-
-  // Push notification helper
-  /**
-   * Spawns a floating toast notification at the top right of the application.
-   * Auto-dismisses the notification after 4.5 seconds to conserve memory.
-   *
-   * @param {string} message Text contents of the notification toast.
-   * @param {'info' | 'success' | 'alert'} [type='info'] Classification for color coding.
-   */
-  const addSystemNotification = (message: string, type: 'info' | 'success' | 'alert' = 'info') => {
-    const newNotif = { id: "notif-" + Date.now(), message, type };
-    setNotifications(prev => [newNotif, ...prev].slice(0, 4));
-    
-    // Auto clear
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== newNotif.id));
-    }, 4500);
-  };
-
-  // Preset swapper
-  /**
-   * Loads a custom full-scale stadium simulation preset (e.g., normal, severe storm, egress rush).
-   *
-   * @param {number} index Index of the preset inside SIMULATION_PRESETS.
-   */
-  const handleSelectPreset = (index: number) => {
-    setActivePresetIndex(index);
-    setStadiumState(SIMULATION_PRESETS[index].state);
-    addSystemNotification(`Loaded: ${SIMULATION_PRESETS[index].name}`, "info");
-  };
-
-  // State modification callbacks (passed to sub-apps to form a complete database loop)
-  /**
-   * Updates an individual volunteer's active status.
-   *
-   * @param {string} volunteerId ID of the target volunteer.
-   * @param {'Available' | 'Busy' | 'On Break'} status New status value.
-   */
-  const handleUpdateVolunteerStatus = (volunteerId: string, status: 'Available' | 'Busy' | 'On Break') => {
-    setStadiumState(prev => {
-      const updatedVols = prev.volunteers.map(v => 
-         v.id === volunteerId ? { ...v, status } : v
-      );
-      return { ...prev, volunteers: updatedVols };
-    });
-  };
-
-  /**
-   * Registers a newly reported incident to the centralized state.
-   * Prevents duplicates using ID deduplication.
-   *
-   * @param {Incident} newInc Object representing the reported incident.
-   */
-  const handleAddIncident = (newInc: Incident) => {
-    setStadiumState(prev => {
-      // Avoid duplicate keys if already added
-      if (prev.incidents.find(i => i.id === newInc.id)) return prev;
-      return {
-        ...prev,
-        incidents: [newInc, ...prev.incidents]
-      };
-    });
-  };
-
-  /**
-   * Marks an incident as resolved and returns the assigned volunteer back to an active "Available" state.
-   *
-   * @param {string} incidentId ID of the incident to clear.
-   * @param {string} actionTaken Narrative log of resolution steps executed on-site.
-   */
-  const handleResolveIncident = (incidentId: string, actionTaken: string) => {
-    setStadiumState(prev => {
-      const targetInc = prev.incidents.find(i => i.id === incidentId);
-      if (!targetInc) return prev;
-
-      // Update incident
-      const updatedIncidents = prev.incidents.map(i => 
-        i.id === incidentId 
-          ? { ...i, status: "Resolved" as const, actionTaken, reportSummary: `Resolved on ground. Action: ${actionTaken}` } 
-          : i
-      );
-
-      // If a volunteer was assigned, free them up
-      const volunteerId = targetInc.assignedVolunteerId;
-      const updatedVols = prev.volunteers.map(v => 
-        v.id === volunteerId ? { ...v, status: "Available" as const, assignedTaskId: null } : v
-      );
-
-      return {
-        ...prev,
-        incidents: updatedIncidents,
-        volunteers: updatedVols
-      };
-    });
-    addSystemNotification(`Incident cleared successfully.`, "success");
-  };
 
   return (
     <div className="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-teal-500 selection:text-slate-950">
       
+      {/* Skip to Main Content Link */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2.5 focus:bg-teal-500 focus:text-slate-950 focus:font-bold focus:rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-400 focus:shadow-2xl transition"
+      >
+        Skip to Main Content
+      </a>
+
       {/* Dynamic Toast Notifications */}
-      <div className="fixed top-6 right-6 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none">
+      <div 
+        className="fixed top-6 right-6 z-50 flex flex-col gap-2.5 max-w-sm w-full pointer-events-none"
+        aria-live="polite"
+        aria-atomic="true"
+        role="log"
+      >
         {notifications.map((n) => (
           <div
             key={n.id}
+            role="status"
             className={`pointer-events-auto flex items-start gap-3 rounded-xl p-4 shadow-2xl border backdrop-blur-md animate-slideIn ${
               n.type === 'success' 
                 ? "bg-emerald-950/90 border-emerald-500/35 text-emerald-300"
@@ -232,9 +120,9 @@ export default function App() {
                 : "bg-slate-900/95 border-slate-700/60 text-slate-200"
             }`}
           >
-            {n.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />}
-            {n.type === 'alert' && <AlertTriangle className="w-5 h-5 text-rose-400 flex-shrink-0 animate-pulse" />}
-            {n.type === 'info' && <Info className="w-5 h-5 text-sky-400 flex-shrink-0" />}
+            {n.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" aria-hidden="true" />}
+            {n.type === 'alert' && <AlertTriangle className="w-5 h-5 text-rose-400 flex-shrink-0 animate-pulse" aria-hidden="true" />}
+            {n.type === 'info' && <Info className="w-5 h-5 text-sky-400 flex-shrink-0" aria-hidden="true" />}
             
             <div className="flex-1 text-xs font-sans leading-relaxed">
               {n.message}
@@ -286,14 +174,17 @@ export default function App() {
             <div className="relative">
               <button
                 onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                aria-haspopup="dialog"
+                aria-expanded={isSettingsOpen}
+                aria-controls="settings-panel"
                 className={`flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-950/60 border ${
                   isSettingsOpen 
                     ? "border-teal-500 text-teal-400 shadow-lg shadow-teal-500/10" 
                     : "border-slate-900 text-slate-400 hover:text-teal-400 hover:border-slate-800"
-                } shadow-md transition duration-300 pointer-events-auto cursor-pointer text-xs font-sans font-medium`}
+                } shadow-md transition duration-300 pointer-events-auto cursor-pointer text-xs font-sans font-medium focus-visible:ring-2 focus-visible:ring-teal-500 outline-none`}
                 title="System Preferences & Modes"
               >
-                <Settings className={`w-4 h-4 ${isSettingsOpen ? 'animate-spin-slow' : ''}`} />
+                <Settings className={`w-4 h-4 ${isSettingsOpen ? 'animate-spin-slow' : ''}`} aria-hidden="true" />
                 <span>Settings</span>
               </button>
 
@@ -303,21 +194,29 @@ export default function App() {
                   {/* Click outside to close overlay */}
                   <div 
                     className="fixed inset-0 z-40 pointer-events-auto" 
+                    aria-hidden="true"
                     onClick={() => setIsSettingsOpen(false)}
                   />
                   
-                  <div className="absolute right-0 mt-3 w-80 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl p-4 z-50 backdrop-blur-xl animate-fadeIn font-sans pointer-events-auto">
+                  <div 
+                    id="settings-panel"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label="System Preferences"
+                    className="absolute right-0 mt-3 w-80 rounded-2xl bg-slate-900/95 border border-slate-800 shadow-2xl p-4 z-50 backdrop-blur-xl animate-fadeIn font-sans pointer-events-auto focus:outline-none"
+                  >
                     {/* Popover Header */}
                     <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800/80">
                       <div className="flex items-center gap-2">
-                        <Settings className="w-4 h-4 text-teal-400" />
+                        <Settings className="w-4 h-4 text-teal-400" aria-hidden="true" />
                         <span className="text-xs font-bold tracking-wide uppercase text-slate-200">System Preferences</span>
                       </div>
                       <button 
                         onClick={() => setIsSettingsOpen(false)}
-                        className="p-1 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition cursor-pointer"
+                        aria-label="Close System Preferences"
+                        className="p-1 rounded-lg hover:bg-slate-800 text-slate-500 hover:text-slate-300 transition cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
                       >
-                        <X className="w-4 h-4" />
+                        <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </div>
 
@@ -464,20 +363,26 @@ export default function App() {
                           Password is <code className="text-teal-400 font-mono font-bold bg-slate-900 px-1.5 py-0.5 rounded border border-slate-850">{pendingRole}</code>
                         </div>
                         <form onSubmit={handlePasswordSubmit} className="flex gap-2">
-                          <input
-                            type="text"
-                            value={passwordInput}
-                            onChange={(e) => {
-                              setPasswordInput(e.target.value);
-                              setPasswordError(null);
-                            }}
-                            placeholder={`Enter "${pendingRole}"`}
-                            autoFocus
-                            className="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-850 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-teal-500 transition"
-                          />
+                          <div className="flex-1 min-w-0">
+                            <label htmlFor="settings-password-input" className="sr-only">
+                              Password for {pendingRole === 'volunteer' ? 'Volunteer' : 'Organizer'}
+                            </label>
+                            <input
+                              id="settings-password-input"
+                              type="text"
+                              value={passwordInput}
+                              onChange={(e) => {
+                                setPasswordInput(e.target.value);
+                                setPasswordError(null);
+                              }}
+                              placeholder={`Enter "${pendingRole}"`}
+                              autoFocus
+                              className="w-full px-2.5 py-1.5 rounded-lg bg-slate-900 border border-slate-850 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 transition"
+                            />
+                          </div>
                           <button
                             type="submit"
-                            className="px-3 py-1.5 rounded-lg bg-teal-500 text-slate-950 font-bold text-xs hover:bg-teal-400 transition cursor-pointer flex-shrink-0"
+                            className="px-3 py-1.5 rounded-lg bg-teal-500 text-slate-950 font-bold text-xs hover:bg-teal-400 transition cursor-pointer flex-shrink-0 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
                           >
                             Verify
                           </button>
@@ -649,7 +554,7 @@ export default function App() {
 
       {/* ORGANIZER MODE MAIN CONTAINER (Adaptive Multi-Page Layout) */}
       {activeRole === "organizer" && (
-        <main className="flex-1 max-w-7xl w-full mx-auto p-6">
+        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto p-6" tabIndex={-1}>
           {activeOrganizerTab === 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-fadeIn">
               {/* Left/Top: Tour Walkthrough */}
@@ -698,31 +603,35 @@ export default function App() {
 
           {activeOrganizerTab === 2 && (
             <div className="animate-fadeIn">
-              <OrganizerDashboard
-                state={stadiumState}
-                onSelectPreset={handleSelectPreset}
-                activePresetIndex={activePresetIndex}
-                onResolveIncident={handleResolveIncident}
-                onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
-                addSystemNotification={addSystemNotification}
-                activeStepId={activeStepId}
-                activeSection={2}
-              />
+              <ErrorBoundary><Suspense fallback={<LoaderFallback />}>
+                <OrganizerDashboard
+                  state={stadiumState}
+                  onSelectPreset={handleSelectPreset}
+                  activePresetIndex={activePresetIndex}
+                  onResolveIncident={handleResolveIncident}
+                  onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
+                  addSystemNotification={addSystemNotification}
+                  activeStepId={activeStepId}
+                  activeSection={2}
+                />
+              </Suspense></ErrorBoundary>
             </div>
           )}
 
           {activeOrganizerTab === 3 && (
             <div className="animate-fadeIn">
-              <OrganizerDashboard
-                state={stadiumState}
-                onSelectPreset={handleSelectPreset}
-                activePresetIndex={activePresetIndex}
-                onResolveIncident={handleResolveIncident}
-                onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
-                addSystemNotification={addSystemNotification}
-                activeStepId={activeStepId}
-                activeSection={3}
-              />
+              <ErrorBoundary><Suspense fallback={<LoaderFallback />}>
+                <OrganizerDashboard
+                  state={stadiumState}
+                  onSelectPreset={handleSelectPreset}
+                  activePresetIndex={activePresetIndex}
+                  onResolveIncident={handleResolveIncident}
+                  onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
+                  addSystemNotification={addSystemNotification}
+                  activeStepId={activeStepId}
+                  activeSection={3}
+                />
+              </Suspense></ErrorBoundary>
             </div>
           )}
         </main>
@@ -730,7 +639,7 @@ export default function App() {
 
       {/* VOLUNTEER MODE MAIN CONTAINER (Adaptive Multi-Page Layout) */}
       {activeRole === "volunteer" && (
-        <main className="flex-1 max-w-7xl w-full mx-auto p-6">
+        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto p-6" tabIndex={-1}>
           {activeVolunteerTab === 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-fadeIn">
               {/* Left/Top: Tour Walkthrough */}
@@ -781,14 +690,16 @@ export default function App() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-fadeIn">
               {/* Left: Volunteer status & dispatch tasks */}
               <div className="lg:col-span-7">
-                <VolunteerApp
-                  state={stadiumState}
-                  onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
-                  onResolveIncident={handleResolveIncident}
-                  onAddIncident={handleAddIncident}
-                  addSystemNotification={addSystemNotification}
-                  activeVolunteerTab={2}
-                />
+                <ErrorBoundary><Suspense fallback={<LoaderFallback />}>
+                  <VolunteerApp
+                    state={stadiumState}
+                    onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
+                    onResolveIncident={handleResolveIncident}
+                    onAddIncident={handleAddIncident}
+                    addSystemNotification={addSystemNotification}
+                    activeVolunteerTab={2}
+                  />
+                </Suspense></ErrorBoundary>
               </div>
 
               {/* Right: Live Telemetry & Event Stream */}
@@ -818,14 +729,16 @@ export default function App() {
 
           {activeVolunteerTab === 3 && (
             <div className="animate-fadeIn">
-              <VolunteerApp
-                state={stadiumState}
-                onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
-                onResolveIncident={handleResolveIncident}
-                onAddIncident={handleAddIncident}
-                addSystemNotification={addSystemNotification}
-                activeVolunteerTab={3}
-              />
+              <ErrorBoundary><Suspense fallback={<LoaderFallback />}>
+                <VolunteerApp
+                  state={stadiumState}
+                  onUpdateVolunteerStatus={handleUpdateVolunteerStatus}
+                  onResolveIncident={handleResolveIncident}
+                  onAddIncident={handleAddIncident}
+                  addSystemNotification={addSystemNotification}
+                  activeVolunteerTab={3}
+                />
+              </Suspense></ErrorBoundary>
             </div>
           )}
         </main>
@@ -833,7 +746,7 @@ export default function App() {
 
       {activeRole === "fan" && (
         /* FAN MODE MAIN CONTAINER (Adaptive Multi-Page Layout) */
-        <main className="flex-1 max-w-7xl w-full mx-auto p-6">
+        <main id="main-content" className="flex-1 max-w-7xl w-full mx-auto p-6" tabIndex={-1}>
           {activeFanTab === 1 && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start animate-fadeIn">
               {/* Left/Top: Walkthrough Story Narrative (Tour Walkthrough) */}
@@ -881,13 +794,15 @@ export default function App() {
           )}
 
           {activeFanTab !== 1 && (
-            <div className="animate-fadeIn">
-              <FanApp
-                state={stadiumState}
-                addIncident={handleAddIncident}
-                addSystemNotification={addSystemNotification}
-                activeFanTab={activeFanTab}
-              />
+            <div className="animate-fadeIn font-sans">
+              <ErrorBoundary><Suspense fallback={<LoaderFallback />}>
+                <FanApp
+                  state={stadiumState}
+                  addIncident={handleAddIncident}
+                  addSystemNotification={addSystemNotification}
+                  activeFanTab={activeFanTab}
+                />
+              </Suspense></ErrorBoundary>
             </div>
           )}
         </main>
@@ -908,7 +823,9 @@ export default function App() {
       </footer>
 
       {/* APP GUIDEBOOK OVERLAY MODAL */}
-      <AppGuidebook isOpen={isGuidebookOpen} onClose={() => setIsGuidebookOpen(false)} />
+      <ErrorBoundary><Suspense fallback={null}>
+        <AppGuidebook isOpen={isGuidebookOpen} onClose={() => setIsGuidebookOpen(false)} />
+      </Suspense></ErrorBoundary>
 
     </div>
   );

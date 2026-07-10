@@ -28,7 +28,7 @@ export default function VolunteerActiveTaskPanel({
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6" id="assigned-dispatch-panel">
       <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2 mb-4">
-        <CheckSquare className="w-5 h-5 text-teal-400" />
+        <CheckSquare className="w-5 h-5 text-teal-400" aria-hidden="true" />
         Your Assigned Dispatch Task
       </h3>
 
@@ -42,7 +42,7 @@ export default function VolunteerActiveTaskPanel({
                 {task.priority} Priority
               </span>
               <span className="text-xs text-slate-400 flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" />
+                <Clock className="w-3.5 h-3.5" aria-hidden="true" />
                 Logged at {task.timestamp}
               </span>
             </div>
@@ -55,7 +55,7 @@ export default function VolunteerActiveTaskPanel({
             {/* AI Guided Steps */}
             <div className="mb-4">
               <h5 className="text-xs font-mono font-semibold text-teal-400 mb-2 uppercase tracking-wider flex items-center gap-1.5">
-                <ListTodo className="w-4 h-4" />
+                <ListTodo className="w-4 h-4" aria-hidden="true" />
                 AI Action Checklist
               </h5>
               <div className="space-y-2">
@@ -76,19 +76,20 @@ export default function VolunteerActiveTaskPanel({
 
             {/* Resolution input form */}
             <div className="border-t border-slate-900 pt-4 mt-4">
-              <label className="block text-xs font-mono text-slate-400 mb-1.5">Resolution Actions Log (Required)</label>
+              <label htmlFor={`resolution-notes-${task.id}`} className="block text-xs font-mono text-slate-400 mb-1.5">Resolution Actions Log (Required)</label>
               <textarea
+                id={`resolution-notes-${task.id}`}
                 rows={2}
                 value={resolutionNotes}
                 onChange={(e) => setResolutionNotes(e.target.value)}
                 placeholder="Describe steps taken (e.g., 'Secured and taped safety zone', 'Assisted child to Lost desk')"
-                className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500 mb-3"
+                className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none mb-3"
               />
               <button
                 onClick={() => onResolveTask(task.id)}
-                className="w-full bg-teal-500 hover:bg-teal-600 text-slate-950 font-sans font-semibold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer"
+                className="w-full bg-teal-500 hover:bg-teal-600 text-slate-950 font-sans font-semibold text-xs py-2 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
               >
-                <CheckCircle className="w-4 h-4" />
+                <CheckCircle className="w-4 h-4" aria-hidden="true" />
                 Resolve Incident & Log to Command
               </button>
             </div>

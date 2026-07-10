@@ -445,10 +445,12 @@ AI Stadium Decision Engine - Certified
           </p>
 
           <div className="flex flex-col md:flex-row gap-3 mb-4">
+            <label htmlFor="what-if-scenario-select" className="sr-only">Select What-If Failure Scenario</label>
             <select
+              id="what-if-scenario-select"
               value={whatIfScenario}
               onChange={(e) => setWhatIfScenario(e.target.value)}
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 outline-none"
+              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none cursor-pointer"
             >
               <option>What happens if Gate A closes for 10 minutes?</option>
               <option>What happens if Metro services are delayed by 15 minutes?</option>
@@ -457,9 +459,9 @@ AI Stadium Decision Engine - Certified
             <button
               onClick={handleRunWhatIf}
               disabled={loadingWhatIf}
-              className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-bold text-xs px-5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5"
+              className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-bold text-xs px-5 py-2.5 rounded-xl transition flex items-center justify-center gap-1.5 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none cursor-pointer"
             >
-              {loadingWhatIf ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Gauge className="w-3.5 h-3.5" />}
+              {loadingWhatIf ? <RefreshCw className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> : <Gauge className="w-3.5 h-3.5" aria-hidden="true" />}
               Run Simulation Model
             </button>
           </div>
@@ -525,15 +527,15 @@ AI Stadium Decision Engine - Certified
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
-              <BarChart className="w-5 h-5 text-teal-400" />
+              <BarChart className="w-5 h-5 text-teal-400" aria-hidden="true" />
               General AI crowd prediction (20-Mins Future)
             </h3>
             <button
               onClick={handleRequestForecast}
               disabled={loadingForecast}
-              className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-semibold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1.5"
+              className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-semibold text-xs px-4 py-2 rounded-xl transition flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none cursor-pointer"
             >
-              {loadingForecast ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
+              {loadingForecast ? <RefreshCw className="w-3.5 h-3.5 animate-spin" aria-hidden="true" /> : <Zap className="w-3.5 h-3.5" aria-hidden="true" />}
               Run Prediction Model
             </button>
           </div>
@@ -946,20 +948,25 @@ AI Stadium Decision Engine - Certified
 
               {/* Form */}
               <div className="flex gap-2 mt-auto">
-                <input
-                  type="text"
-                  value={commandInput}
-                  onChange={(e) => setCommandInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendOrganizerCommand()}
-                  placeholder="Deploy strategies, draft alerts, optimize transits..."
-                  className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500"
-                />
+                <div className="flex-1">
+                  <label htmlFor="organizer-chat-input" className="sr-only">Ask Command Copilot</label>
+                  <input
+                    id="organizer-chat-input"
+                    type="text"
+                    value={commandInput}
+                    onChange={(e) => setCommandInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSendOrganizerCommand()}
+                    placeholder="Deploy strategies, draft alerts, optimize transits..."
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
+                  />
+                </div>
                 <button
                   onClick={handleSendOrganizerCommand}
                   disabled={loadingCommand || !commandInput.trim()}
-                  className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-semibold rounded-xl p-2.5 transition flex-shrink-0"
+                  aria-label="Send message"
+                  className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-semibold rounded-xl p-2.5 transition flex-shrink-0 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
             </div>

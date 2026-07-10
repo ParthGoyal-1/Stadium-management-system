@@ -53,7 +53,7 @@ describe('App main shell and coordinator', () => {
     expect(screen.getByText(/Arena Telemetry Map/i)).toBeInTheDocument(); // Organizer dashboard elements should render
   });
 
-  it('triggers guidebook modal display and closure', () => {
+  it('triggers guidebook modal display and closure', async () => {
     render(<App />);
 
     // Open settings panel
@@ -64,12 +64,12 @@ describe('App main shell and coordinator', () => {
     const guideBtn = screen.getByRole('button', { name: /Open App Guidebook/i });
     fireEvent.click(guideBtn);
 
-    expect(screen.getByText('Stadium Command Center — Operations Guidebook')).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByText(/Stadium Command Center — Operations Guidebook/i)).toBeInTheDocument());
 
     const closeButtons = screen.getAllByRole('button', { name: /Close/i });
     fireEvent.click(closeButtons[0]);
 
-    expect(screen.queryByText('Stadium Command Center — Operations Guidebook')).not.toBeInTheDocument();
+    expect(screen.queryByText(/Stadium Command Center — Operations Guidebook/i)).not.toBeInTheDocument();
   });
 
   it('requires a password check when manually requesting access to protected portals', async () => {

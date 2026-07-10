@@ -21,7 +21,7 @@ interface AIOperationsDebriefProps {
  * @param {AIOperationsDebriefProps} props Component props.
  * @returns {React.ReactElement} The AI post-operations debrief dashboard.
  */
-export default function AIOperationsDebrief({
+const AIOperationsDebrief = React.memo(function AIOperationsDebrief({
   activePresetIndex,
   activeStepId,
   activeMatchEvent,
@@ -128,7 +128,7 @@ export default function AIOperationsDebrief({
       <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 mb-4 gap-3">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-teal-500/10 border border-teal-500/25 flex items-center justify-center">
-            <FileCheck className="w-5 h-5 text-teal-400" />
+            <FileCheck className="w-5 h-5 text-teal-400" aria-hidden="true" />
           </div>
           <div>
             <h3 className="text-base font-semibold text-slate-100 flex items-center gap-2">
@@ -146,26 +146,28 @@ export default function AIOperationsDebrief({
           <button
             onClick={handleRegenerate}
             disabled={isGenerating}
-            className="p-2 rounded-xl bg-slate-950 hover:bg-slate-850 border border-slate-800 text-slate-300 transition text-xs flex items-center gap-1.5 font-medium"
+            className="p-2 rounded-xl bg-slate-950 hover:bg-slate-850 border border-slate-800 text-slate-300 transition text-xs flex items-center gap-1.5 font-medium focus-visible:ring-2 focus-visible:ring-teal-500 outline-none cursor-pointer"
           >
-            <RefreshCw className={`w-3.5 h-3.5 text-teal-400 ${isGenerating ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 text-teal-400 ${isGenerating ? 'animate-spin' : ''}`} aria-hidden="true" />
             Recalculate
           </button>
           <button
             onClick={handleExport}
-            className="p-2 rounded-xl bg-teal-500 hover:bg-teal-600 text-slate-950 font-sans font-bold transition text-xs flex items-center gap-1.5"
+            className="p-2 rounded-xl bg-teal-500 hover:bg-teal-600 text-slate-950 font-sans font-bold transition text-xs flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Download className="w-3.5 h-3.5" aria-hidden="true" />
             Export PDF
           </button>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4 border-b border-slate-900 pb-3">
+      <div className="flex gap-2 mb-4 border-b border-slate-900 pb-3" role="tablist" aria-label="Debrief view tabs">
         <button
           onClick={() => setActiveTab("executive")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+          role="tab"
+          aria-selected={activeTab === "executive"}
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition focus-visible:ring-2 focus-visible:ring-teal-500 outline-none cursor-pointer ${
             activeTab === "executive"
               ? "bg-slate-950 text-teal-400 border border-slate-800"
               : "text-slate-400 hover:text-slate-200"
@@ -175,7 +177,9 @@ export default function AIOperationsDebrief({
         </button>
         <button
           onClick={() => setActiveTab("analytics")}
-          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
+          role="tab"
+          aria-selected={activeTab === "analytics"}
+          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition focus-visible:ring-2 focus-visible:ring-teal-500 outline-none cursor-pointer ${
             activeTab === "analytics"
               ? "bg-slate-950 text-teal-400 border border-slate-800"
               : "text-slate-400 hover:text-slate-200"
@@ -259,4 +263,6 @@ export default function AIOperationsDebrief({
       )}
     </div>
   );
-}
+})
+
+export default AIOperationsDebrief;

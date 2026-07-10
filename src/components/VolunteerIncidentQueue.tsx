@@ -16,14 +16,14 @@ interface VolunteerIncidentQueueProps {
  * @param {VolunteerIncidentQueueProps} props Component props.
  * @returns {React.ReactElement} The unassigned alerts pool UI.
  */
-export default function VolunteerIncidentQueue({
+const VolunteerIncidentQueue = React.memo(function VolunteerIncidentQueue({
   openAlertPool,
   onClaimTask
 }: VolunteerIncidentQueueProps) {
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6" id="alerts-pool-panel">
       <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2 mb-4">
-        <AlertTriangle className="w-5 h-5 text-amber-500 animate-pulse" />
+        <AlertTriangle className="w-5 h-5 text-amber-500 animate-pulse" aria-hidden="true" />
         Command Incident Queue (Open Pool)
       </h3>
 
@@ -44,7 +44,7 @@ export default function VolunteerIncidentQueue({
               </div>
               <button
                 onClick={() => onClaimTask(alert.id)}
-                className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-850 border border-slate-750 text-teal-400 hover:text-teal-300 font-sans font-semibold text-xs rounded-xl transition whitespace-nowrap cursor-pointer"
+                className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-850 border border-slate-750 text-teal-400 hover:text-teal-300 font-sans font-semibold text-xs rounded-xl transition whitespace-nowrap cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
               >
                 Accept & Dispatch
               </button>
@@ -58,4 +58,6 @@ export default function VolunteerIncidentQueue({
       </div>
     </div>
   );
-}
+})
+
+export default VolunteerIncidentQueue;

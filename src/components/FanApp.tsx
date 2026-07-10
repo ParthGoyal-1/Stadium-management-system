@@ -223,11 +223,12 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">Your Starting Location</label>
+                <label htmlFor="start-point" className="block text-xs font-mono text-slate-400 mb-1">Your Starting Location</label>
                 <select 
+                  id="start-point"
                   value={startPoint} 
                   onChange={(e) => setStartPoint(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
                 >
                   <option>Gate A (Main North)</option>
                   <option>Gate B (South West)</option>
@@ -236,11 +237,12 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1">Target Destination</label>
+                <label htmlFor="end-point" className="block text-xs font-mono text-slate-400 mb-1">Target Destination</label>
                 <select 
+                  id="end-point"
                   value={endPoint} 
                   onChange={(e) => setEndPoint(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500"
+                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
                 >
                   <option>Sector South (Supporters Deck)</option>
                   <option>Argentina Megastore (North Level 1)</option>
@@ -256,9 +258,9 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
                   type="checkbox" 
                   checked={accessRequired} 
                   onChange={(e) => setAccessRequired(e.target.checked)}
-                  className="rounded bg-slate-950 border-slate-800 text-teal-500 focus:ring-0 focus:ring-offset-0"
+                  className="rounded bg-slate-950 border-slate-800 text-teal-500 focus:ring-2 focus:ring-teal-500 outline-none"
                 />
-                <Accessibility className="w-4 h-4 text-sky-400" />
+                <Accessibility className="w-4 h-4 text-sky-400" aria-hidden="true" />
                 Stairs-Free Accessibility Route Required (Elevator / Ramp)
               </label>
             </div>
@@ -266,9 +268,9 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
             <button
               onClick={handleCalculateRoute}
               disabled={loadingNav}
-              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2"
+              className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
             >
-              {loadingNav ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Compass className="w-4 h-4" />}
+              {loadingNav ? <RefreshCw className="w-4 h-4 animate-spin" aria-hidden="true" /> : <Compass className="w-4 h-4" aria-hidden="true" />}
               Calculate AI-Optimized Walking Route
             </button>
 
@@ -310,18 +312,18 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
           <div className="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-2xl p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
-                <Accessibility className="w-5 h-5 text-sky-400" />
+                <Accessibility className="w-5 h-5 text-sky-400" aria-hidden="true" />
                 Inclusive Support Desk
               </h3>
               <button 
                 onClick={() => setHighContrast(!highContrast)}
-                className={`px-3 py-1.5 rounded-lg border text-xs font-sans font-medium transition flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg border text-xs font-sans font-medium transition flex items-center gap-1.5 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                   highContrast 
                     ? "bg-sky-500 text-slate-950 border-sky-400" 
                     : "bg-slate-950 border-slate-800 text-slate-300 hover:bg-slate-900"
                 }`}
               >
-                <Eye className="w-3.5 h-3.5" />
+                <Eye className="w-3.5 h-3.5" aria-hidden="true" />
                 High Contrast
               </button>
             </div>
@@ -470,7 +472,9 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
               </div>
             </div>
 
+            <label htmlFor="language-select" className="sr-only">Select language</label>
             <select
+              id="language-select"
               value={activeLanguage}
               onChange={(e) => {
                 setActiveLanguage(e.target.value);
@@ -490,7 +494,7 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
                   timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }]);
               }}
-              className="bg-slate-950 border border-slate-800 text-[10px] font-sans font-medium text-slate-400 rounded px-2 py-1 outline-none cursor-pointer"
+              className="bg-slate-950 border border-slate-800 text-[10px] font-sans font-medium text-slate-400 rounded px-2 py-1 outline-none cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500"
             >
               <option>English</option>
               <option>Spanish</option>
@@ -530,7 +534,11 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
           </div>
 
           {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+          <div 
+            className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent"
+            aria-live="polite"
+            aria-relevant="additions"
+          >
             {chatHistory.map((m) => (
               <div key={m.id} className={`flex flex-col ${m.sender === "user" ? "items-end" : "items-start"}`}>
                 <div className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed ${
@@ -557,20 +565,25 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
 
           {/* Chat Input */}
           <div className="flex gap-2 mt-auto">
-            <input
-              type="text"
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
-              placeholder="Ask anything (shortest gate, dynamic paths, help)..."
-              className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500"
-            />
+            <div className="flex-1">
+              <label htmlFor="fan-chat-input" className="sr-only">Ask Fan Copilot</label>
+              <input
+                id="fan-chat-input"
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSendChat()}
+                placeholder="Ask anything (shortest gate, dynamic paths, help)..."
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
+              />
+            </div>
             <button
               onClick={() => handleSendChat()}
               disabled={loadingChat || !chatInput.trim()}
-              className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-semibold rounded-xl p-2.5 transition flex-shrink-0 cursor-pointer"
+              aria-label="Send message"
+              className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-semibold rounded-xl p-2.5 transition flex-shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         </div>

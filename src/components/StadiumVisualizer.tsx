@@ -10,7 +10,7 @@ interface StadiumVisualizerProps {
   onSelectGate: (gateId: string | null) => void;
 }
 
-export default function StadiumVisualizer({
+const StadiumVisualizer = React.memo(function StadiumVisualizer({
   state,
   selectedSectorId,
   onSelectSector,
@@ -82,8 +82,18 @@ export default function StadiumVisualizer({
           
           {/* SEC NORTH (Upper arc) */}
           <path
+            tabIndex={0}
+            role="button"
+            aria-label={`North Sector: ${state.sectors[0].crowdLevel} crowding, ${state.sectors[0].currentCount} inside`}
+            aria-pressed={selectedSectorId === "sec-north"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectSector(selectedSectorId === "sec-north" ? null : "sec-north");
+              }
+            }}
             d="M 60 140 A 150 150 0 0 1 340 140 L 290 170 A 90 90 0 0 0 110 170 Z"
-            className={`cursor-pointer transition-all duration-300 stroke-2 ${getCrowdColor(state.sectors[0].crowdLevel)} ${
+            className={`cursor-pointer transition-all duration-300 stroke-2 focus-visible:outline-none focus-visible:stroke-teal-400 ${getCrowdColor(state.sectors[0].crowdLevel)} ${
               selectedSectorId === "sec-north" ? "stroke-teal-400 fill-teal-500/20" : "stroke-slate-700"
             }`}
             onClick={() => onSelectSector(selectedSectorId === "sec-north" ? null : "sec-north")}
@@ -94,8 +104,18 @@ export default function StadiumVisualizer({
           
           {/* SEC EAST (Right arc) */}
           <path
+            tabIndex={0}
+            role="button"
+            aria-label={`East Sector: ${state.sectors[1].crowdLevel} crowding, ${state.sectors[1].currentCount} inside`}
+            aria-pressed={selectedSectorId === "sec-east"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectSector(selectedSectorId === "sec-east" ? null : "sec-east");
+              }
+            }}
             d="M 340 140 A 150 150 0 0 1 340 260 L 290 230 A 90 90 0 0 0 290 170 Z"
-            className={`cursor-pointer transition-all duration-300 stroke-2 ${getCrowdColor(state.sectors[1].crowdLevel)} ${
+            className={`cursor-pointer transition-all duration-300 stroke-2 focus-visible:outline-none focus-visible:stroke-teal-400 ${getCrowdColor(state.sectors[1].crowdLevel)} ${
               selectedSectorId === "sec-east" ? "stroke-teal-400 fill-teal-500/20" : "stroke-slate-700"
             }`}
             onClick={() => onSelectSector(selectedSectorId === "sec-east" ? null : "sec-east")}
@@ -103,11 +123,21 @@ export default function StadiumVisualizer({
           <text x="325" y="205" className="fill-slate-100 font-sans font-semibold text-[11px] pointer-events-none" textAnchor="middle">
             EAST
           </text>
-
+ 
           {/* SEC SOUTH (Lower arc) */}
           <path
+            tabIndex={0}
+            role="button"
+            aria-label={`South Sector: ${state.sectors[2].crowdLevel} crowding, ${state.sectors[2].currentCount} inside`}
+            aria-pressed={selectedSectorId === "sec-south"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectSector(selectedSectorId === "sec-south" ? null : "sec-south");
+              }
+            }}
             d="M 340 260 A 150 150 0 0 1 60 260 L 110 230 A 90 90 0 0 0 290 230 Z"
-            className={`cursor-pointer transition-all duration-300 stroke-2 ${getCrowdColor(state.sectors[2].crowdLevel)} ${
+            className={`cursor-pointer transition-all duration-300 stroke-2 focus-visible:outline-none focus-visible:stroke-teal-400 ${getCrowdColor(state.sectors[2].crowdLevel)} ${
               selectedSectorId === "sec-south" ? "stroke-teal-400 fill-teal-500/20" : "stroke-slate-700"
             }`}
             onClick={() => onSelectSector(selectedSectorId === "sec-south" ? null : "sec-south")}
@@ -115,11 +145,21 @@ export default function StadiumVisualizer({
           <text x="200" y="305" className="fill-slate-100 font-sans font-semibold text-[11px] pointer-events-none" textAnchor="middle">
             SOUTH
           </text>
-
+ 
           {/* SEC WEST (Left arc) */}
           <path
+            tabIndex={0}
+            role="button"
+            aria-label={`West Sector: ${state.sectors[3].crowdLevel} crowding, ${state.sectors[3].currentCount} inside`}
+            aria-pressed={selectedSectorId === "sec-west"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectSector(selectedSectorId === "sec-west" ? null : "sec-west");
+              }
+            }}
             d="M 60 260 A 150 150 0 0 1 60 140 L 110 170 A 90 90 0 0 0 110 230 Z"
-            className={`cursor-pointer transition-all duration-300 stroke-2 ${getCrowdColor(state.sectors[3].crowdLevel)} ${
+            className={`cursor-pointer transition-all duration-300 stroke-2 focus-visible:outline-none focus-visible:stroke-teal-400 ${getCrowdColor(state.sectors[3].crowdLevel)} ${
               selectedSectorId === "sec-west" ? "stroke-teal-400 fill-teal-500/20" : "stroke-slate-700"
             }`}
             onClick={() => onSelectSector(selectedSectorId === "sec-west" ? null : "sec-west")}
@@ -138,27 +178,79 @@ export default function StadiumVisualizer({
 
           {/* GATES SENSORS (Outer circles) */}
           {/* Gate A (Main North) */}
-          <g className="cursor-pointer" onClick={() => onSelectGate(selectedGateId === "gate-a" ? null : "gate-a")}>
+          <g 
+            tabIndex={0}
+            role="button"
+            aria-label={`Gate A (Main North): Queue length ${state.gates[0]?.queueLength || 0}, Wait time ${state.gates[0]?.waitTimeMinutes || 0} minutes`}
+            aria-pressed={selectedGateId === "gate-a"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectGate(selectedGateId === "gate-a" ? null : "gate-a");
+              }
+            }}
+            className="cursor-pointer focus-visible:outline-none focus-visible:stroke-teal-400" 
+            onClick={() => onSelectGate(selectedGateId === "gate-a" ? null : "gate-a")}
+          >
             <circle cx="200" cy="25" r="14" className={`${selectedGateId === "gate-a" ? "fill-teal-500 stroke-white" : "fill-slate-900 stroke-rose-500"} stroke-2`} />
-            <text x="200" y="29" className="fill-slate-200 font-mono text-[9px] font-bold" textAnchor="middle">A</text>
+            <text x="200" y="29" className="fill-slate-200 font-mono text-[9px] font-bold text-center" textAnchor="middle">A</text>
           </g>
 
           {/* Gate B (Southwest) */}
-          <g className="cursor-pointer" onClick={() => onSelectGate(selectedGateId === "gate-b" ? null : "gate-b")}>
+          <g 
+            tabIndex={0}
+            role="button"
+            aria-label={`Gate B (Southwest): Queue length ${state.gates[1]?.queueLength || 0}, Wait time ${state.gates[1]?.waitTimeMinutes || 0} minutes`}
+            aria-pressed={selectedGateId === "gate-b"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectGate(selectedGateId === "gate-b" ? null : "gate-b");
+              }
+            }}
+            className="cursor-pointer focus-visible:outline-none focus-visible:stroke-teal-400" 
+            onClick={() => onSelectGate(selectedGateId === "gate-b" ? null : "gate-b")}
+          >
             <circle cx="45" cy="315" r="14" className={`${selectedGateId === "gate-b" ? "fill-teal-500 stroke-white" : "fill-slate-900 stroke-emerald-500"} stroke-2`} />
-            <text x="45" y="319" className="fill-slate-200 font-mono text-[9px] font-bold" textAnchor="middle">B</text>
+            <text x="45" y="319" className="fill-slate-200 font-mono text-[9px] font-bold text-center" textAnchor="middle">B</text>
           </g>
 
           {/* Gate C (Southeast) */}
-          <g className="cursor-pointer" onClick={() => onSelectGate(selectedGateId === "gate-c" ? null : "gate-c")}>
+          <g 
+            tabIndex={0}
+            role="button"
+            aria-label={`Gate C (Southeast): Queue length ${state.gates[2]?.queueLength || 0}, Wait time ${state.gates[2]?.waitTimeMinutes || 0} minutes`}
+            aria-pressed={selectedGateId === "gate-c"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectGate(selectedGateId === "gate-c" ? null : "gate-c");
+              }
+            }}
+            className="cursor-pointer focus-visible:outline-none focus-visible:stroke-teal-400" 
+            onClick={() => onSelectGate(selectedGateId === "gate-c" ? null : "gate-c")}
+          >
             <circle cx="355" cy="315" r="14" className={`${selectedGateId === "gate-c" ? "fill-teal-500 stroke-white" : "fill-slate-900 stroke-emerald-500"} stroke-2`} />
-            <text x="355" y="319" className="fill-slate-200 font-mono text-[9px] font-bold" textAnchor="middle">C</text>
+            <text x="355" y="319" className="fill-slate-200 font-mono text-[9px] font-bold text-center" textAnchor="middle">C</text>
           </g>
 
           {/* Gate D (West VIP) */}
-          <g className="cursor-pointer" onClick={() => onSelectGate(selectedGateId === "gate-d" ? null : "gate-d")}>
+          <g 
+            tabIndex={0}
+            role="button"
+            aria-label={`Gate D (West VIP): Queue length ${state.gates[3]?.queueLength || 0}, Wait time ${state.gates[3]?.waitTimeMinutes || 0} minutes`}
+            aria-pressed={selectedGateId === "gate-d"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onSelectGate(selectedGateId === "gate-d" ? null : "gate-d");
+              }
+            }}
+            className="cursor-pointer focus-visible:outline-none focus-visible:stroke-teal-400" 
+            onClick={() => onSelectGate(selectedGateId === "gate-d" ? null : "gate-d")}
+          >
             <circle cx="25" cy="200" r="14" className={`${selectedGateId === "gate-d" ? "fill-teal-500 stroke-white" : "fill-slate-900 stroke-sky-400"} stroke-2`} />
-            <text x="25" y="204" className="fill-slate-200 font-mono text-[9px] font-bold" textAnchor="middle">D</text>
+            <text x="25" y="204" className="fill-slate-200 font-mono text-[9px] font-bold text-center" textAnchor="middle">D</text>
           </g>
 
           {/* ACTIVE INCIDENTS VISUAL PULSES */}
@@ -268,4 +360,6 @@ export default function StadiumVisualizer({
       </div>
     </div>
   );
-}
+})
+
+export default StadiumVisualizer;

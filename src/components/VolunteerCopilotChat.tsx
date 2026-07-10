@@ -46,26 +46,30 @@ export default function VolunteerCopilotChat({
       <div className="flex flex-wrap gap-1.5 mb-4 font-sans">
         <button 
           onClick={() => setVolChatInput("What is the protocol for active flares in Section South?")}
-          className="bg-slate-950 hover:bg-slate-850 border border-slate-850 text-slate-300 px-2 py-1 rounded text-[10px] transition cursor-pointer"
+          className="bg-slate-950 hover:bg-slate-850 border border-slate-850 text-slate-300 px-2 py-1 rounded text-[10px] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
         >
           🔥 Flares Protocol?
         </button>
         <button 
           onClick={() => setVolChatInput("Where is the nearest First Aid trauma backpack in East Stand?")}
-          className="bg-slate-950 hover:bg-slate-850 border border-slate-850 text-slate-300 px-2 py-1 rounded text-[10px] transition cursor-pointer"
+          className="bg-slate-950 hover:bg-slate-850 border border-slate-850 text-slate-300 px-2 py-1 rounded text-[10px] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
         >
           🎒 First Aid location?
         </button>
         <button 
           onClick={() => setVolChatInput("How do I help a fan who lost their digital ticket at turnstiles?")}
-          className="bg-slate-950 hover:bg-slate-850 border border-slate-850 text-slate-300 px-2 py-1 rounded text-[10px] transition cursor-pointer"
+          className="bg-slate-950 hover:bg-slate-850 border border-slate-850 text-slate-300 px-2 py-1 rounded text-[10px] transition cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
         >
           🎟️ Lost ticket help?
         </button>
       </div>
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1 min-h-[220px] max-h-[380px] scrollbar-thin">
+      <div 
+        className="flex-1 overflow-y-auto space-y-4 mb-4 pr-1 min-h-[220px] max-h-[380px] scrollbar-thin"
+        aria-live="polite"
+        aria-relevant="additions"
+      >
         {volChatHistory.map((m) => (
           <div key={m.id} className={`flex flex-col ${m.sender === "user" ? "items-end" : "items-start"}`}>
             <div className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed ${
@@ -90,20 +94,25 @@ export default function VolunteerCopilotChat({
 
       {/* Input field */}
       <div className="flex gap-2 mt-auto">
-        <input
-          type="text"
-          value={volChatInput}
-          onChange={(e) => setVolChatInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && onSendVolChat()}
-          placeholder="Ask Copilot (flares, first aid, checklist)..."
-          className="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500 font-sans"
-        />
+        <div className="flex-1">
+          <label htmlFor="vol-chat-input" className="sr-only">Ask Volunteer Copilot</label>
+          <input
+            id="vol-chat-input"
+            type="text"
+            value={volChatInput}
+            onChange={(e) => setVolChatInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && onSendVolChat()}
+            placeholder="Ask Copilot (flares, first aid, checklist)..."
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none font-sans"
+          />
+        </div>
         <button
           onClick={onSendVolChat}
           disabled={loadingVolChat || !volChatInput.trim()}
-          className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-semibold rounded-xl p-2.5 transition flex-shrink-0 cursor-pointer"
+          aria-label="Send chat message"
+          className="bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-semibold rounded-xl p-2.5 transition flex-shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-4 h-4" aria-hidden="true" />
         </button>
       </div>
     </div>

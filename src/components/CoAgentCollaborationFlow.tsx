@@ -27,7 +27,7 @@ interface ChainNode {
  * @param {CoAgentCollaborationFlowProps} props Component props.
  * @returns {React.ReactElement} The multi-agent collaboration visualization panel.
  */
-export default function CoAgentCollaborationFlow({
+const CoAgentCollaborationFlow = React.memo(function CoAgentCollaborationFlow({
   activeStepId,
   activeMatchEvent
 }: CoAgentCollaborationFlowProps) {
@@ -382,7 +382,9 @@ export default function CoAgentCollaborationFlow({
       </div>
     </div>
   );
-}
+})
+
+export default CoAgentCollaborationFlow;
 
 // Simple Helper Leaf Icon inline
 function LeafIcon(props: any) {

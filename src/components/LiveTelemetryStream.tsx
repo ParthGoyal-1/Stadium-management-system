@@ -30,7 +30,7 @@ const SAMPLE_MESSAGES = [
   "First aid kit replenished at Section South checkpoint"
 ];
 
-export default function LiveTelemetryStream({
+const LiveTelemetryStream = React.memo(function LiveTelemetryStream({
   state,
   activeStepId,
   addSystemNotification
@@ -228,7 +228,7 @@ export default function LiveTelemetryStream({
         {/* Controls */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setIsPlaying(!isPlaying)}
+            onClick={() => setIsPlaying(!isPlaying)} aria-label={isPlaying ? "Pause Stream" : "Play Stream"}
             className={`p-1 px-2.5 rounded-lg border text-[10px] font-semibold flex items-center gap-1 transition ${
               isPlaying 
                 ? "bg-slate-950 hover:bg-slate-850 border-slate-800 text-slate-300"
@@ -267,7 +267,7 @@ export default function LiveTelemetryStream({
       </div>
 
       {/* Terminal logs list */}
-      <div className="bg-slate-950 border border-slate-850 rounded-xl p-3 h-[240px] overflow-y-auto font-mono text-[10px] leading-relaxed space-y-2 scrollbar-thin">
+      <div className="bg-slate-950 border border-slate-850 rounded-xl p-3 h-[240px] overflow-y-auto font-mono text-[10px] leading-relaxed space-y-2 scrollbar-thin" aria-live="polite" aria-atomic="false" role="log">
         {logs.map((log) => (
           <div key={log.id} className="flex gap-2 items-start border-b border-slate-900/60 pb-1.5 last:border-0 last:pb-0 animate-fadeIn">
             {/* Timestamp */}
@@ -296,4 +296,6 @@ export default function LiveTelemetryStream({
       </div>
     </div>
   );
-}
+})
+
+export default LiveTelemetryStream;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   X, 
   BookOpen, 
@@ -32,15 +32,64 @@ interface AppGuidebookProps {
 export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
   const [activeSection, setActiveSection] = useState<number>(1);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // Focus the first element (close button or first tab)
+    const modalElement = document.getElementById("guidebook-modal");
+    if (modalElement) {
+      const focusable = modalElement.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      if (focusable.length) {
+        (focusable[0] as HTMLElement).focus();
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const modal = document.getElementById("guidebook-modal");
+        if (!modal) return;
+        const focusableElements = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusableElements.length === 0) return;
+
+        const first = focusableElements[0] as HTMLElement;
+        const last = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            last.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === last) {
+            first.focus();
+            e.preventDefault();
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
     <div 
       className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 md:p-6 pointer-events-auto animate-fadeIn"
       id="guidebook-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="guidebook-title"
+      aria-describedby="guidebook-desc"
     >
       {/* Backdrop Click close */}
-      <div className="absolute inset-0 cursor-default" onClick={onClose} />
+      <div className="absolute inset-0 cursor-default" aria-hidden="true" onClick={onClose} />
       
       {/* Main Modal Box */}
       <div className="relative bg-slate-900 border border-slate-800 rounded-3xl max-w-5xl w-full h-[90vh] max-h-[850px] shadow-2xl flex flex-col overflow-hidden animate-scaleIn font-sans">
@@ -49,24 +98,25 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
         <div className="flex items-center justify-between px-6 py-5 border-b border-slate-800 bg-slate-950/40 relative z-10">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-teal-500/10">
-              <BookOpen className="w-5 h-5 text-slate-950 stroke-[2.5]" />
+              <BookOpen className="w-5 h-5 text-slate-950 stroke-[2.5]" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="font-bold tracking-tight text-slate-100 text-base md:text-lg flex items-center gap-2">
+              <h2 id="guidebook-title" className="font-bold tracking-tight text-slate-100 text-base md:text-lg flex items-center gap-2">
                 Stadium Command Center — Operations Guidebook
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-teal-500/15 text-teal-400 border border-teal-500/30">
                   v3.5 Manual
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">Master the interactive simulator, role systems, and AI copilot services</p>
+              <p id="guidebook-desc" className="text-xs text-slate-400">Master the interactive simulator, role systems, and AI copilot services</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-850 text-slate-400 hover:text-slate-100 transition cursor-pointer"
+            className="p-2 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-850 text-slate-400 hover:text-slate-100 transition cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
             title="Close Guidebook"
+            aria-label="Close Guidebook"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -74,71 +124,99 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
           
           {/* Sidebar Navigation */}
-          <div className="w-full md:w-64 bg-slate-950/30 border-b md:border-b-0 md:border-r border-slate-800/80 p-4 flex md:flex-col gap-1.5 overflow-x-auto md:overflow-y-auto scrollbar-none flex-shrink-0">
+          <div 
+            className="w-full md:w-64 bg-slate-950/30 border-b md:border-b-0 md:border-r border-slate-800/80 p-4 flex md:flex-col gap-1.5 overflow-x-auto md:overflow-y-auto scrollbar-none flex-shrink-0"
+            role="tablist"
+            aria-label="Guidebook Sections"
+          >
             <button
+              id="tab-section-1"
+              role="tab"
+              aria-selected={activeSection === 1}
+              aria-controls="panel-section-1"
               onClick={() => setActiveSection(1)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                 activeSection === 1
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
               }`}
             >
-              <Compass className="w-4 h-4 flex-shrink-0" />
+              <Compass className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               <span>1. Platform Overview</span>
             </button>
             <button
+              id="tab-section-2"
+              role="tab"
+              aria-selected={activeSection === 2}
+              aria-controls="panel-section-2"
               onClick={() => setActiveSection(2)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                 activeSection === 2
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
               }`}
             >
-              <Users className="w-4 h-4 flex-shrink-0" />
+              <Users className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               <span>2. Supporter App</span>
             </button>
             <button
+              id="tab-section-3"
+              role="tab"
+              aria-selected={activeSection === 3}
+              aria-controls="panel-section-3"
               onClick={() => setActiveSection(3)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                 activeSection === 3
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
               }`}
             >
-              <Shield className="w-4 h-4 flex-shrink-0" />
+              <Shield className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               <span>3. Volunteer Portal</span>
             </button>
             <button
+              id="tab-section-4"
+              role="tab"
+              aria-selected={activeSection === 4}
+              aria-controls="panel-section-4"
               onClick={() => setActiveSection(4)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                 activeSection === 4
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
               }`}
             >
-              <Zap className="w-4 h-4 flex-shrink-0" />
+              <Zap className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               <span>4. Organizer Cockpit</span>
             </button>
             <button
+              id="tab-section-5"
+              role="tab"
+              aria-selected={activeSection === 5}
+              aria-controls="panel-section-5"
               onClick={() => setActiveSection(5)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                 activeSection === 5
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
               }`}
             >
-              <Activity className="w-4 h-4 flex-shrink-0" />
+              <Activity className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               <span>5. Presets &amp; Scenarios</span>
             </button>
             <button
+              id="tab-section-6"
+              role="tab"
+              aria-selected={activeSection === 6}
+              aria-controls="panel-section-6"
               onClick={() => setActiveSection(6)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full ${
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-200 cursor-pointer text-left whitespace-nowrap md:w-full focus-visible:ring-2 focus-visible:ring-teal-500 outline-none ${
                 activeSection === 6
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/30"
               }`}
             >
-              <Sparkles className="w-4 h-4 flex-shrink-0" />
+              <Sparkles className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
               <span>6. Co-Agents &amp; Analytics</span>
             </button>
           </div>
@@ -148,7 +226,13 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
             
             {/* SECTION 1: OVERVIEW */}
             {activeSection === 1 && (
-              <div className="space-y-6 animate-fadeIn">
+              <div 
+                id="panel-section-1"
+                role="tabpanel"
+                aria-labelledby="tab-section-1"
+                tabIndex={0}
+                className="space-y-6 animate-fadeIn focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/55 rounded-xl p-1"
+              >
                 <div className="bg-slate-950/40 border border-slate-850 rounded-2xl p-5 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl" />
                   <h3 className="text-base font-bold text-slate-100 mb-2 flex items-center gap-2">
@@ -221,7 +305,13 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
 
             {/* SECTION 2: SUPPORTER APP */}
             {activeSection === 2 && (
-              <div className="space-y-6 animate-fadeIn">
+              <div 
+                id="panel-section-2"
+                role="tabpanel"
+                aria-labelledby="tab-section-2"
+                tabIndex={0}
+                className="space-y-6 animate-fadeIn focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/55 rounded-xl p-1"
+              >
                 <div className="bg-slate-950/40 border border-slate-850 rounded-2xl p-5 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl" />
                   <h3 className="text-base font-bold text-slate-100 mb-2 flex items-center gap-2">
@@ -294,7 +384,13 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
 
             {/* SECTION 3: VOLUNTEER PORTAL */}
             {activeSection === 3 && (
-              <div className="space-y-6 animate-fadeIn">
+              <div 
+                id="panel-section-3"
+                role="tabpanel"
+                aria-labelledby="tab-section-3"
+                tabIndex={0}
+                className="space-y-6 animate-fadeIn focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/55 rounded-xl p-1"
+              >
                 <div className="bg-slate-950/40 border border-slate-850 rounded-2xl p-5 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-sky-500/5 rounded-full blur-2xl" />
                   <h3 className="text-base font-bold text-slate-100 mb-2 flex items-center gap-2">
@@ -365,7 +461,13 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
 
             {/* SECTION 4: ORGANIZER COCKPIT */}
             {activeSection === 4 && (
-              <div className="space-y-6 animate-fadeIn">
+              <div 
+                id="panel-section-4"
+                role="tabpanel"
+                aria-labelledby="tab-section-4"
+                tabIndex={0}
+                className="space-y-6 animate-fadeIn focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/55 rounded-xl p-1"
+              >
                 <div className="bg-slate-950/40 border border-slate-850 rounded-2xl p-5 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-2xl" />
                   <h3 className="text-base font-bold text-slate-100 mb-2 flex items-center gap-2">
@@ -423,7 +525,13 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
 
             {/* SECTION 5: PRESETS & SCENARIOS */}
             {activeSection === 5 && (
-              <div className="space-y-6 animate-fadeIn">
+              <div 
+                id="panel-section-5"
+                role="tabpanel"
+                aria-labelledby="tab-section-5"
+                tabIndex={0}
+                className="space-y-6 animate-fadeIn focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/55 rounded-xl p-1"
+              >
                 <div className="bg-slate-950/40 border border-slate-850 rounded-2xl p-5 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-teal-500/5 rounded-full blur-2xl" />
                   <h3 className="text-base font-bold text-slate-100 mb-2 flex items-center gap-2">
@@ -481,7 +589,13 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
 
             {/* SECTION 6: CO-AGENTS & ANALYTICS */}
             {activeSection === 6 && (
-              <div className="space-y-6 animate-fadeIn">
+              <div 
+                id="panel-section-6"
+                role="tabpanel"
+                aria-labelledby="tab-section-6"
+                tabIndex={0}
+                className="space-y-6 animate-fadeIn focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/55 rounded-xl p-1"
+              >
                 <div className="bg-slate-950/40 border border-slate-850 rounded-2xl p-5 relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-2xl" />
                   <h3 className="text-base font-bold text-slate-100 mb-2 flex items-center gap-2">

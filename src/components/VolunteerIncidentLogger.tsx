@@ -19,7 +19,7 @@ interface VolunteerIncidentLoggerProps {
  *
  * @component
  */
-export default function VolunteerIncidentLogger({
+const VolunteerIncidentLogger = React.memo(function VolunteerIncidentLogger({
   reportedLocation,
   setReportedLocation,
   reportText,
@@ -41,11 +41,12 @@ export default function VolunteerIncidentLogger({
       <div className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-xs font-mono text-slate-400 mb-1">Incident Spot Location</label>
+            <label htmlFor="spot-location" className="block text-xs font-mono text-slate-400 mb-1">Incident Spot Location</label>
             <select
+              id="spot-location"
               value={reportedLocation}
               onChange={(e) => setReportedLocation(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500"
+              className="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
             >
               <option>Sector North, Section 112</option>
               <option>Sector East, Section 202</option>
@@ -56,22 +57,23 @@ export default function VolunteerIncidentLogger({
         </div>
 
         <div>
-          <label className="block text-xs font-mono text-slate-400 mb-1">Describe What You See</label>
+          <label htmlFor="describe-see" className="block text-xs font-mono text-slate-400 mb-1">Describe What You See</label>
           <textarea
+            id="describe-see"
             rows={3}
             value={reportText}
             onChange={(e) => setReportText(e.target.value)}
             placeholder="Examples: 'Faint supporter row 4 in Sector South', 'Water spill creating slippery area near concession North', 'Minor fight near turnstile'"
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500 font-sans"
+            className="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus-visible:ring-2 focus-visible:ring-teal-500 outline-none font-sans"
           />
         </div>
 
         <button
           onClick={onReportIncident}
           disabled={isReporting || !reportText.trim()}
-          className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full bg-teal-500 hover:bg-teal-600 disabled:bg-slate-800 text-slate-950 font-sans font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 outline-none"
         >
-          {isReporting ? <Clock className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+          {isReporting ? <Clock className="w-4 h-4 animate-spin" aria-hidden="true" /> : <Zap className="w-4 h-4" aria-hidden="true" />}
           File Incident with AI Auto-Classification
         </button>
 
@@ -108,4 +110,6 @@ export default function VolunteerIncidentLogger({
       </div>
     </div>
   );
-}
+})
+
+export default VolunteerIncidentLogger;
