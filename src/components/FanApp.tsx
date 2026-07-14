@@ -12,7 +12,7 @@ interface FanAppProps {
   activeFanTab?: number;
 }
 
-export default function FanApp({ state, addIncident, addSystemNotification, activeFanTab = 2 }: FanAppProps) {
+const FanApp = React.memo(function FanApp({ state, addIncident, addSystemNotification, activeFanTab = 2 }: FanAppProps) {
   // Navigation State
   const [startPoint, setStartPoint] = useState("Gate A (Main North)");
   const [endPoint, setEndPoint] = useState("Sector South (Supporters Deck)");
@@ -355,10 +355,11 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
                   </div>
                 ) : (
                   <button
+                    type="button"
                     onClick={() => setSignLanguageActive(true)}
-                    className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-sans font-medium text-xs py-2 rounded-xl transition flex items-center justify-center gap-2"
+                    className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 font-sans font-medium text-xs py-2 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-400 outline-none"
                   >
-                    <Eye className="w-4 h-4 text-sky-400" />
+                    <Eye className="w-4 h-4 text-sky-400" aria-hidden="true" />
                     Activate Deaf Assist Video Avatar
                   </button>
                 )}
@@ -383,10 +384,11 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
                   </div>
                 ) : (
                   <button
+                    type="button"
                     onClick={triggerWheelchairAssistance}
-                    className="bg-rose-950/30 hover:bg-rose-950/55 border border-rose-500/30 text-rose-400 font-sans font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2"
+                    className="bg-rose-950/30 hover:bg-rose-950/55 border border-rose-500/30 text-rose-400 font-sans font-semibold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 outline-none"
                   >
-                    <ShieldAlert className="w-4 h-4 text-rose-400" />
+                    <ShieldAlert className="w-4 h-4 text-rose-400" aria-hidden="true" />
                     Dispatch Mobility Assistant
                   </button>
                 )}
@@ -438,11 +440,12 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
                   </div>
                 ) : (
                   <button 
+                    type="button"
                     onClick={() => {
                       setEcoPledgeClaimed(true);
                       addSystemNotification("Eco Badge claimed! CO2 offset offset recorded.", "success");
                     }}
-                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-sans font-semibold text-xs py-2 rounded-xl transition cursor-pointer"
+                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-sans font-semibold text-xs py-2 rounded-xl transition cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 outline-none"
                   >
                     Sign Eco-Transit Pledge & Claim Solar Cup
                   </button>
@@ -591,4 +594,6 @@ export default function FanApp({ state, addIncident, addSystemNotification, acti
 
     </div>
   );
-}
+});
+
+export default FanApp;

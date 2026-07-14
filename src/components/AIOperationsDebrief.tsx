@@ -11,6 +11,80 @@ interface AIOperationsDebriefProps {
   addSystemNotification: (message: string, type: "info" | "success" | "alert") => void;
 }
 
+// Dynamic metrics depending on scenario
+const getDebriefData = (activePresetIndex: number) => {
+  switch (activePresetIndex) {
+    case 1: // Incident reported or Step 6/7
+      return {
+        title: "Supporters Congestion & Dispatch Resolution",
+        attendance: "52,341",
+        predictedBottlenecks: 6,
+        preventedBottlenecks: 5,
+        queueReduction: "15 mins",
+        volunteersDispatched: 19,
+        accessibilityCompleted: "100%",
+        emissionsReduced: "8%",
+        keyLessons: "Maintain secondary standby wardens at Gate A's buffer zone when high-occupancy transport alerts trigger.",
+        agentInsights: [
+          "Event Agent identified late-arrival crowd spikes 15 minutes prior to queue building.",
+          "Operations Agent adjusted dynamic pathfinders, shifting 1,200 fans to East plazas.",
+          "Volunteer Agent successfully deployed Kenji Takahashi to direct fans on-foot."
+        ]
+      };
+    case 2: // Severe Weather
+      return {
+        title: "Microclimate Storm Mitigation Audit",
+        attendance: "49,812",
+        predictedBottlenecks: 8,
+        preventedBottlenecks: 8,
+        queueReduction: "22 mins",
+        volunteersDispatched: 25,
+        accessibilityCompleted: "100%",
+        emissionsReduced: "14%",
+        keyLessons: "Increase staffing near Gate C during rainy conditions. Pre-deploy indoor anti-slip floor mats near West escalators.",
+        agentInsights: [
+          "Retractable roof closed automatically 8 minutes before rainfall started.",
+          "Indoor food kiosks optimized queue-times, avoiding concourse cluster locks.",
+          "Sustainability Agent harvested 42,000 liters of greywater runoff for mechanical systems."
+        ]
+      };
+    case 3: // Egress
+      return {
+        title: "Post-Match De-Peaking & Staggered Egress",
+        attendance: "54,209",
+        predictedBottlenecks: 9,
+        preventedBottlenecks: 8,
+        queueReduction: "24 mins",
+        volunteersDispatched: 28,
+        accessibilityCompleted: "100%",
+        emissionsReduced: "18%",
+        keyLessons: "Incentivize local transit credit programs early to flatten the initial 10-minute egress curve.",
+        agentInsights: [
+          "Laser show entertainment retained 32% of fans inside, preventing platform crush.",
+          "Volunteer exit wardens funneled 4,100 supporters toward under-utilized West Bus Loops.",
+          "Fan Agent pushed dynamically delayed navigation cards to avoid crowding of Metro staircases."
+        ]
+      };
+    default: // Normal / Supporters Rush
+      return {
+        title: "Match Summary - Active Phase Operations",
+        attendance: "52,341",
+        predictedBottlenecks: 7,
+        preventedBottlenecks: 6,
+        queueReduction: "18 minutes",
+        volunteersDispatched: 23,
+        accessibilityCompleted: "100%",
+        emissionsReduced: "12%",
+        keyLessons: "Increase staffing near Gate C during rainy conditions. Pre-stage wheelchair support in south corridor.",
+        agentInsights: [
+          "Gate A overflow predicted in 12 mins; successfully bypassed 1,800 fans to alternate gates.",
+          "Operations Agent adjusted dynamic signage to point to under-utilized Gate D.",
+          "Fan app guided wheelchair guests to stair-free routes with 100% on-time arrival."
+        ]
+      };
+  }
+};
+
 /**
  * AIOperationsDebrief Component.
  * Compiles a post-event tactical debrief and analytics review, synthesizing lessons
@@ -30,81 +104,7 @@ const AIOperationsDebrief = React.memo(function AIOperationsDebrief({
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeTab, setActiveTab] = useState<"executive" | "analytics">("executive");
 
-  // Dynamic metrics depending on scenario
-  const getDebriefData = () => {
-    switch (activePresetIndex) {
-      case 1: // Incident reported or Step 6/7
-        return {
-          title: "Supporters Congestion & Dispatch Resolution",
-          attendance: "52,341",
-          predictedBottlenecks: 6,
-          preventedBottlenecks: 5,
-          queueReduction: "15 mins",
-          volunteersDispatched: 19,
-          accessibilityCompleted: "100%",
-          emissionsReduced: "8%",
-          keyLessons: "Maintain secondary standby wardens at Gate A's buffer zone when high-occupancy transport alerts trigger.",
-          agentInsights: [
-            "Event Agent identified late-arrival crowd spikes 15 minutes prior to queue building.",
-            "Operations Agent adjusted dynamic pathfinders, shifting 1,200 fans to East plazas.",
-            "Volunteer Agent successfully deployed Kenji Takahashi to direct fans on-foot."
-          ]
-        };
-      case 2: // Severe Weather
-        return {
-          title: "Microclimate Storm Mitigation Audit",
-          attendance: "49,812",
-          predictedBottlenecks: 8,
-          preventedBottlenecks: 8,
-          queueReduction: "22 mins",
-          volunteersDispatched: 25,
-          accessibilityCompleted: "100%",
-          emissionsReduced: "14%",
-          keyLessons: "Increase staffing near Gate C during rainy conditions. Pre-deploy indoor anti-slip floor mats near West escalators.",
-          agentInsights: [
-            "Retractable roof closed automatically 8 minutes before rainfall started.",
-            "Indoor food kiosks optimized queue-times, avoiding concourse cluster locks.",
-            "Sustainability Agent harvested 42,000 liters of greywater runoff for mechanical systems."
-          ]
-        };
-      case 3: // Egress
-        return {
-          title: "Post-Match De-Peaking & Staggered Egress",
-          attendance: "54,209",
-          predictedBottlenecks: 9,
-          preventedBottlenecks: 8,
-          queueReduction: "24 mins",
-          volunteersDispatched: 28,
-          accessibilityCompleted: "100%",
-          emissionsReduced: "18%",
-          keyLessons: "Incentivize local transit credit programs early to flatten the initial 10-minute egress curve.",
-          agentInsights: [
-            "Laser show entertainment retained 32% of fans inside, preventing platform crush.",
-            "Volunteer exit wardens funneled 4,100 supporters toward under-utilized West Bus Loops.",
-            "Fan Agent pushed dynamically delayed navigation cards to avoid crowding of Metro staircases."
-          ]
-        };
-      default: // Normal / Supporters Rush
-        return {
-          title: "Match Summary - Active Phase Operations",
-          attendance: "52,341",
-          predictedBottlenecks: 7,
-          preventedBottlenecks: 6,
-          queueReduction: "18 minutes",
-          volunteersDispatched: 23,
-          accessibilityCompleted: "100%",
-          emissionsReduced: "12%",
-          keyLessons: "Increase staffing near Gate C during rainy conditions. Pre-stage wheelchair support in south corridor.",
-          agentInsights: [
-            "Gate A overflow predicted in 12 mins; successfully bypassed 1,800 fans to alternate gates.",
-            "Operations Agent adjusted dynamic signage to point to under-utilized Gate D.",
-            "Fan app guided wheelchair guests to stair-free routes with 100% on-time arrival."
-          ]
-        };
-    }
-  };
-
-  const data = getDebriefData();
+  const data = getDebriefData(activePresetIndex);
 
   // Handle a simulated "Regenerate/Audit" cycle
   const handleRegenerate = () => {

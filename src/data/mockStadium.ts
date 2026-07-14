@@ -157,7 +157,7 @@ export const INITIAL_STADIUM_STATE: StadiumState = {
   simulatedTime: "19:35"
 };
 
-export const SIMULATION_PRESETS = [
+export const SIMULATION_PRESETS: { name: string; description: string; state: StadiumState }[] = [
   {
     name: "Pre-Match Rush (Current)",
     description: "Fans arriving in massive numbers. Gate A is highly congested, transit is running at peak capacity, weather is clear and pleasant.",

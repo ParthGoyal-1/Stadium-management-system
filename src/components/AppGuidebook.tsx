@@ -29,7 +29,7 @@ interface AppGuidebookProps {
  *
  * @component
  */
-export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
+const AppGuidebook = React.memo(function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
   const [activeSection, setActiveSection] = useState<number>(1);
 
   useEffect(() => {
@@ -650,4 +650,6 @@ export default function AppGuidebook({ isOpen, onClose }: AppGuidebookProps) {
       </div>
     </div>
   );
-}
+});
+
+export default AppGuidebook;

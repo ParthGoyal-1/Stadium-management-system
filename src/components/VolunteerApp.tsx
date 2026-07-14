@@ -15,7 +15,7 @@ interface VolunteerAppProps {
   activeVolunteerTab?: number;
 }
 
-export default function VolunteerApp({
+const VolunteerApp = React.memo(function VolunteerApp({
   state,
   onUpdateVolunteerStatus,
   onResolveIncident,
@@ -290,4 +290,6 @@ export default function VolunteerApp({
       </div>
     </div>
   );
-}
+});
+
+export default VolunteerApp;

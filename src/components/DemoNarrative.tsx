@@ -147,23 +147,25 @@ const DemoNarrative = React.memo(function DemoNarrative({
         {/* Navigation Actions */}
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={onResetDemo}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-850 text-slate-400 hover:text-slate-200 border border-slate-800 text-[10px] font-semibold transition"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-850 text-slate-400 hover:text-slate-200 border border-slate-800 text-[10px] font-semibold transition focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none cursor-pointer"
             title="Reset Tour"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
             Restart
           </button>
           
           <div className="w-px h-4 bg-slate-800" />
 
           <button
+            type="button"
             aria-label="Previous Step"
             disabled={currentStepId === 1}
             onClick={() => onStepChange(currentStepId - 1)}
-            className="p-1.5 rounded-lg bg-slate-950 hover:bg-slate-850 text-slate-400 hover:text-slate-200 disabled:opacity-40 border border-slate-800 transition"
+            className="p-1.5 rounded-lg bg-slate-950 hover:bg-slate-850 text-slate-400 hover:text-slate-200 disabled:opacity-40 border border-slate-800 transition focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
           </button>
 
           <span className="text-xs font-mono text-slate-400 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">
@@ -171,24 +173,28 @@ const DemoNarrative = React.memo(function DemoNarrative({
           </span>
 
           <button
+            type="button"
             aria-label="Next Step"
             disabled={currentStepId === DEMO_STEPS.length}
             onClick={() => onStepChange(currentStepId + 1)}
-            className="p-1.5 rounded-lg bg-teal-500 hover:bg-teal-600 text-slate-950 disabled:opacity-40 transition"
+            className="p-1.5 rounded-lg bg-teal-500 hover:bg-teal-600 text-slate-950 disabled:opacity-40 transition focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none cursor-pointer"
           >
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
       </div>
 
       {/* Step Stepper Dot indicators */}
-      <div className="flex justify-between gap-1 mb-4 z-10 relative overflow-x-auto py-1 scrollbar-thin">
+      <div className="flex justify-between gap-1 mb-4 z-10 relative overflow-x-auto py-1 scrollbar-thin" role="tablist" aria-label="Walkthrough chapters">
         {DEMO_STEPS.map((s) => (
           <button
             key={s.id}
+            type="button"
+            role="tab"
+            aria-selected={s.id === currentStepId}
             aria-label={`Go to step ${s.id}`}
             onClick={() => onStepChange(s.id)}
-            className={`flex-1 min-w-[32px] h-2 rounded-full transition-all duration-300 ${
+            className={`flex-1 min-w-[32px] h-2.5 rounded-full transition-all duration-300 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none cursor-pointer ${
               s.id === currentStepId
                 ? "bg-teal-400 shadow-md shadow-teal-500/20"
                 : s.id < currentStepId
@@ -237,19 +243,21 @@ const DemoNarrative = React.memo(function DemoNarrative({
 
           {currentStepId < DEMO_STEPS.length ? (
             <button
+              type="button"
               onClick={() => onStepChange(currentStepId + 1)}
-              className="mt-2 w-full bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-semibold py-1.5 rounded-lg flex items-center justify-center gap-1 transition"
+              className="mt-2 w-full bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[10px] font-semibold py-1.5 rounded-lg flex items-center justify-center gap-1 transition focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none cursor-pointer"
             >
               Next Story Chapter
-              <ArrowRight className="w-3 h-3" />
+              <ArrowRight className="w-3 h-3" aria-hidden="true" />
             </button>
           ) : (
             <button
+              type="button"
               onClick={onResetDemo}
-              className="mt-2 w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-[10px] font-semibold py-1.5 rounded-lg flex items-center justify-center gap-1 transition"
+              className="mt-2 w-full bg-emerald-600 hover:bg-emerald-500 text-slate-950 text-[10px] font-semibold py-1.5 rounded-lg flex items-center justify-center gap-1 transition focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none cursor-pointer"
             >
               Restart Narrative
-              <RotateCcw className="w-3 h-3" />
+              <RotateCcw className="w-3 h-3" aria-hidden="true" />
             </button>
           )}
         </div>

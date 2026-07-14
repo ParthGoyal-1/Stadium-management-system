@@ -17,6 +17,307 @@ interface ChainNode {
   text: string;
 }
 
+// Dynamic flow definitions depending on the state
+const getCollaborationChain = (activeStepId: number, activeMatchEvent: string | null): { title: string; description: string; nodes: ChainNode[] } => {
+  // 1. Argentina scores goal event
+  if (activeMatchEvent === "Argentina Scores! (Goal Scored)") {
+    return {
+      title: "Celebration Spike & Concessions Rush Loop",
+      description: "How the network dynamically handles local celebratory crowd waves and sudden concessions peaks",
+      nodes: [
+        {
+          agentName: "Event / Sec Agent",
+          role: "Senses Vibration",
+          icon: ShieldAlert,
+          color: "text-rose-400 stroke-rose-500",
+          bgHighlight: "bg-rose-500/10 border-rose-500/30",
+          text: "Detected high-frequency vibration spike in Sector South Row 12. Predicts immediate concession demand wave (+25%)."
+        },
+        {
+          agentName: "Operations Agent",
+          role: "Adjusts Signage",
+          icon: Activity,
+          color: "text-sky-400 stroke-sky-500",
+          bgHighlight: "bg-sky-500/10 border-sky-500/30",
+          text: "Formulates concession load balancing; locks dynamic overhead signage to point to under-utilized North kiosks."
+        },
+        {
+          agentName: "Volunteer Agent",
+          role: "Deploys Staff",
+          icon: Shield,
+          color: "text-amber-400 stroke-amber-500",
+          bgHighlight: "bg-amber-500/10 border-amber-500/30",
+          text: "Dispatched standby volunteer (Sarah Jenkins) to South Row 12 to secure site and monitor flares."
+        },
+        {
+          agentName: "Fan Agent",
+          role: "Guides Supporters",
+          icon: Users,
+          color: "text-teal-400 stroke-teal-500",
+          bgHighlight: "bg-teal-500/10 border-teal-500/30",
+          text: "Pushes in-app celebration card & provides direct indoor navigation to avoid congesed food queues."
+        },
+        {
+          agentName: "Sustainability Agent",
+          role: "Emissions Offset",
+          icon: LeafIcon,
+          color: "text-emerald-400 stroke-emerald-500",
+          bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
+          text: "Balances concession energy spikes & flags smart waste bins in South Concourse for immediate post-rush collection."
+        }
+      ]
+    };
+  }
+
+  // 2. Halftime rush event
+  if (activeMatchEvent === "Half Time Food Rush") {
+    return {
+      title: "Halftime Mass Movement Coordination",
+      description: "Coordinating thousands of concurrent fans seeking food & restrooms within a 15-minute window",
+      nodes: [
+        {
+          agentName: "Event Agent",
+          role: "Predicts Halftime",
+          icon: Sparkles,
+          color: "text-rose-400 stroke-rose-500",
+          bgHighlight: "bg-rose-500/10 border-rose-500/30",
+          text: "Predicts massive pedestrian friction at Sector North. Anticipated restrooms queues hit 15 mins."
+        },
+        {
+          agentName: "Operations Agent",
+          role: "Reroutes Flows",
+          icon: Activity,
+          color: "text-sky-400 stroke-sky-500",
+          bgHighlight: "bg-sky-500/10 border-sky-500/30",
+          text: "Calculates alternative pathing. Adjusts dynamic prices at West Stand stalls to incentivize flow diversion."
+        },
+        {
+          agentName: "Volunteer Agent",
+          role: "Controls Queue",
+          icon: Shield,
+          color: "text-amber-400 stroke-amber-500",
+          bgHighlight: "bg-amber-500/10 border-amber-500/30",
+          text: "Reroutes field staff Carlos Ramos & Kenji Takahashi to direct crowd flow physically along West walk-path."
+        },
+        {
+          agentName: "Fan Agent",
+          role: "Device Updates",
+          icon: Users,
+          color: "text-teal-400 stroke-teal-500",
+          bgHighlight: "bg-teal-500/10 border-teal-500/30",
+          text: "Broadbasts 'Secret Concessions' ad & updates in-app GPS map with shortest walk-time paths."
+        },
+        {
+          agentName: "Sustainability Agent",
+          role: "Reduces Waste",
+          icon: LeafIcon,
+          color: "text-emerald-400 stroke-emerald-500",
+          bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
+          text: "Prevents food waste by matching stall prep quotas with real-time crowd direction forecasts."
+        }
+      ]
+    };
+  }
+
+  // 3. Post-match egress event
+  if (activeMatchEvent === "Full Time / Egress Starts" || activeStepId === 8) {
+    return {
+      title: "Post-Match Egress De-peaking Chain",
+      description: "Coordinating stadium clearance, platform safety, and smart transit dispatching",
+      nodes: [
+        {
+          agentName: "Event Agent",
+          role: "Halftime Predictor",
+          icon: Sparkles,
+          color: "text-rose-400 stroke-rose-500",
+          bgHighlight: "bg-rose-500/10 border-rose-500/30",
+          text: "Predicts Metro station platforms will saturate within 8 mins of final whistle. Demands staggered egress."
+        },
+        {
+          agentName: "Operations Agent",
+          role: "Egress Manager",
+          icon: Activity,
+          color: "text-sky-400 stroke-sky-500",
+          bgHighlight: "bg-sky-500/10 border-sky-500/30",
+          text: "Locks laser show entertainment post-match; initiates free transit credit campaign to hold 30% of fans inside."
+        },
+        {
+          agentName: "Volunteer Agent",
+          role: "Field Marshals",
+          icon: Shield,
+          color: "text-amber-400 stroke-amber-500",
+          bgHighlight: "bg-amber-500/10 border-amber-500/30",
+          text: "Deploys exit marshals with glow wands to funnel supporters toward under-utilized Bus Loops."
+        },
+        {
+          agentName: "Fan Agent",
+          role: "Bypass GPS Routing",
+          icon: Users,
+          color: "text-teal-400 stroke-teal-500",
+          bgHighlight: "bg-teal-500/10 border-teal-500/30",
+          text: "Pushes dynamic transit cards & schedules rideshares dynamically with integrated GPS delay warnings."
+        },
+        {
+          agentName: "Sustainability Agent",
+          role: "Carbon Management",
+          icon: LeafIcon,
+          color: "text-emerald-400 stroke-emerald-500",
+          bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
+          text: "Mitigates vehicle idling. Organizes smart electric shuttle buses directly matching real-time egress flow rate."
+        }
+      ]
+    };
+  }
+
+  // 4. Walkthrough step 5: Rain storm
+  if (activeStepId === 5) {
+    return {
+      title: "Dynamic Rainstorm Mitigation Loop",
+      description: "Coordinating structure, safety, and comfort on microclimate alert",
+      nodes: [
+        {
+          agentName: "Event Agent",
+          role: "Microclimate Alert",
+          icon: Sparkles,
+          color: "text-rose-400 stroke-rose-500",
+          bgHighlight: "bg-rose-500/10 border-rose-500/30",
+          text: "Forecasts storm impact in 3 mins. Flags high risk of concourse slips and seating water damage."
+        },
+        {
+          agentName: "Operations Agent",
+          role: "Structural Action",
+          icon: Activity,
+          color: "text-sky-400 stroke-sky-500",
+          bgHighlight: "bg-sky-500/10 border-sky-500/30",
+          text: "Initiates automatic closure of the stadium retractable roof. Syncs HVAC concourse ventilation."
+        },
+        {
+          agentName: "Volunteer Agent",
+          role: "Safety Dispatch",
+          icon: Shield,
+          color: "text-amber-400 stroke-amber-500",
+          bgHighlight: "bg-amber-500/10 border-amber-500/30",
+          text: "Dispatches volunteers to lay entrance mats & distribute dry stadium blankets to families."
+        },
+        {
+          agentName: "Fan Agent",
+          role: "In-App Guidance",
+          icon: Users,
+          color: "text-teal-400 stroke-teal-500",
+          bgHighlight: "bg-teal-500/10 border-teal-500/30",
+          text: "Routes fans away from open decks; highlights dry indoor family lounges and food zones."
+        },
+        {
+          agentName: "Sustainability Agent",
+          role: "Resource Capture",
+          icon: LeafIcon,
+          color: "text-emerald-400 stroke-emerald-500",
+          bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
+          text: "Diverts roof rain-gutter runoff straight into greywater recycling storage, saving 42k liters."
+        }
+      ]
+    };
+  }
+
+  // 5. Walkthrough steps 6-7: Medical Incident Level 1
+  if (activeStepId === 6 || activeStepId === 7) {
+    return {
+      title: "Medical Emergency Dispatch Integration",
+      description: "How a medical report triggers a cascade of safety, logistics, and fan guidance solutions",
+      nodes: [
+        {
+          agentName: "Event / Sec Agent",
+          role: "Incident Ingestor",
+          icon: ShieldAlert,
+          color: "text-rose-400 stroke-rose-500",
+          bgHighlight: "bg-rose-500/10 border-rose-500/30",
+          text: "Ingests report of a fainted fan in Section 104. Pinpoints coordinates and predicts responder arrival."
+        },
+        {
+          agentName: "Operations Agent",
+          role: "Logistical Control",
+          icon: Activity,
+          color: "text-sky-400 stroke-sky-500",
+          bgHighlight: "bg-sky-500/10 border-sky-500/30",
+          text: "Slows down Escalator 4 near Section 104 to prevent spectator backpressure from crowding the site."
+        },
+        {
+          agentName: "Volunteer Agent",
+          role: "Emergency Route",
+          icon: Shield,
+          color: "text-amber-400 stroke-amber-500",
+          bgHighlight: "bg-amber-500/10 border-amber-500/30",
+          text: "Dispatches nearest volunteer Carlos Ramos with AED kit. Clears emergency ambulance access gate."
+        },
+        {
+          agentName: "Fan Agent",
+          role: "Reroute Guidance",
+          icon: Users,
+          color: "text-teal-400 stroke-teal-500",
+          bgHighlight: "bg-teal-500/10 border-teal-500/30",
+          text: "Alters in-app navigation routes for surrounding fans to use stairs B instead of congested corridor C."
+        },
+        {
+          agentName: "Sustainability Agent",
+          role: "EV Pre-Dispatch",
+          icon: LeafIcon,
+          color: "text-emerald-400 stroke-emerald-500",
+          bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
+          text: "Diverts smart electric medical buggies along emission-free paths to ensure quiet, safe evacuation."
+        }
+      ]
+    };
+  }
+
+  // Default Walkthrough Gate Congestion (Steps 1-3)
+  return {
+    title: "Gate Congestion & Fan Redirection Cascade",
+    description: "Resolving Gate A's 28-minute wait time bottleneck through multi-agent collaboration",
+    nodes: [
+      {
+        agentName: "Event Agent",
+        role: "Predicts Backlog",
+        icon: Sparkles,
+        color: "text-rose-400 stroke-rose-500",
+        bgHighlight: "bg-rose-500/10 border-rose-500/30",
+        text: "Predicts Gate A queue will grow by 420 people in 12 mins. Identifies severe entry delays."
+      },
+      {
+        agentName: "Operations Agent",
+        role: "Dynamic Signage",
+        icon: Activity,
+        color: "text-sky-400 stroke-sky-500",
+        bgHighlight: "bg-sky-500/10 border-sky-500/30",
+        text: "Locks Dynamic Overhead signs at North entrance to 'Diverted Gate D' (currently under-utilized)."
+      },
+      {
+        agentName: "Volunteer Agent",
+        role: "Staff Redirection",
+        icon: Shield,
+        color: "text-amber-400 stroke-amber-500",
+        bgHighlight: "bg-amber-500/10 border-amber-500/30",
+        text: "Instructs Kenji Takahashi at Gate A plaza to physically steer late arrivals around to the East wing."
+      },
+      {
+        agentName: "Fan Agent",
+        role: "Bypass App GPS",
+        icon: Users,
+        color: "text-teal-400 stroke-teal-500",
+        bgHighlight: "bg-teal-500/10 border-teal-500/30",
+        text: "Pushes interactive bypass routes directly to supporters' mobile devices, saving them 24 mins."
+      },
+      {
+        agentName: "Sustainability Agent",
+        role: "Power Conservation",
+        icon: LeafIcon,
+        color: "text-emerald-400 stroke-emerald-500",
+        bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
+        text: "Reduces dynamic display energy use based on local ambient light. Minimizes queue heat signatures."
+      }
+    ]
+  };
+};
+
 /**
  * CoAgentCollaborationFlow Component.
  * Illustrates the multi-agent orchestration pipeline. Renders the live collaboration
@@ -32,308 +333,7 @@ const CoAgentCollaborationFlow = React.memo(function CoAgentCollaborationFlow({
   activeMatchEvent
 }: CoAgentCollaborationFlowProps) {
 
-  // Dynamic flow definitions depending on the state
-  const getCollaborationChain = (): { title: string; description: string; nodes: ChainNode[] } => {
-    // 1. Argentina scores goal event
-    if (activeMatchEvent === "Argentina Scores! (Goal Scored)") {
-      return {
-        title: "Celebration Spike & Concessions Rush Loop",
-        description: "How the network dynamically handles local celebratory crowd waves and sudden concessions peaks",
-        nodes: [
-          {
-            agentName: "Event / Sec Agent",
-            role: "Senses Vibration",
-            icon: ShieldAlert,
-            color: "text-rose-400 stroke-rose-500",
-            bgHighlight: "bg-rose-500/10 border-rose-500/30",
-            text: "Detected high-frequency vibration spike in Sector South Row 12. Predicts immediate concession demand wave (+25%)."
-          },
-          {
-            agentName: "Operations Agent",
-            role: "Adjusts Signage",
-            icon: Activity,
-            color: "text-sky-400 stroke-sky-500",
-            bgHighlight: "bg-sky-500/10 border-sky-500/30",
-            text: "Formulates concession load balancing; locks dynamic overhead signage to point to under-utilized North kiosks."
-          },
-          {
-            agentName: "Volunteer Agent",
-            role: "Deploys Staff",
-            icon: Shield,
-            color: "text-amber-400 stroke-amber-500",
-            bgHighlight: "bg-amber-500/10 border-amber-500/30",
-            text: "Dispatched standby volunteer (Sarah Jenkins) to South Row 12 to secure site and monitor flares."
-          },
-          {
-            agentName: "Fan Agent",
-            role: "Guides Supporters",
-            icon: Users,
-            color: "text-teal-400 stroke-teal-500",
-            bgHighlight: "bg-teal-500/10 border-teal-500/30",
-            text: "Pushes in-app celebration card & provides direct indoor navigation to avoid congesed food queues."
-          },
-          {
-            agentName: "Sustainability Agent",
-            role: "Emissions Offset",
-            icon: LeafIcon,
-            color: "text-emerald-400 stroke-emerald-500",
-            bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
-            text: "Balances concession energy spikes & flags smart waste bins in South Concourse for immediate post-rush collection."
-          }
-        ]
-      };
-    }
-
-    // 2. Halftime rush event
-    if (activeMatchEvent === "Half Time Food Rush") {
-      return {
-        title: "Halftime Mass Movement Coordination",
-        description: "Coordinating thousands of concurrent fans seeking food & restrooms within a 15-minute window",
-        nodes: [
-          {
-            agentName: "Event Agent",
-            role: "Predicts Halftime",
-            icon: Sparkles,
-            color: "text-rose-400 stroke-rose-500",
-            bgHighlight: "bg-rose-500/10 border-rose-500/30",
-            text: "Predicts massive pedestrian friction at Sector North. Anticipated restrooms queues hit 15 mins."
-          },
-          {
-            agentName: "Operations Agent",
-            role: "Reroutes Flows",
-            icon: Activity,
-            color: "text-sky-400 stroke-sky-500",
-            bgHighlight: "bg-sky-500/10 border-sky-500/30",
-            text: "Calculates alternative pathing. Adjusts dynamic prices at West Stand stalls to incentivize flow diversion."
-          },
-          {
-            agentName: "Volunteer Agent",
-            role: "Controls Queue",
-            icon: Shield,
-            color: "text-amber-400 stroke-amber-500",
-            bgHighlight: "bg-amber-500/10 border-amber-500/30",
-            text: "Reroutes field staff Carlos Ramos & Kenji Takahashi to direct crowd flow physically along West walk-path."
-          },
-          {
-            agentName: "Fan Agent",
-            role: "Device Updates",
-            icon: Users,
-            color: "text-teal-400 stroke-teal-500",
-            bgHighlight: "bg-teal-500/10 border-teal-500/30",
-            text: "Broadbasts 'Secret Concessions' ad & updates in-app GPS map with shortest walk-time paths."
-          },
-          {
-            agentName: "Sustainability Agent",
-            role: "Reduces Waste",
-            icon: LeafIcon,
-            color: "text-emerald-400 stroke-emerald-500",
-            bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
-            text: "Prevents food waste by matching stall prep quotas with real-time crowd direction forecasts."
-          }
-        ]
-      };
-    }
-
-    // 3. Post-match egress event
-    if (activeMatchEvent === "Full Time / Egress Starts" || activeStepId === 8) {
-      return {
-        title: "Post-Match Egress De-peaking Chain",
-        description: "Coordinating stadium clearance, platform safety, and smart transit dispatching",
-        nodes: [
-          {
-            agentName: "Event Agent",
-            role: "Halftime Predictor",
-            icon: Sparkles,
-            color: "text-rose-400 stroke-rose-500",
-            bgHighlight: "bg-rose-500/10 border-rose-500/30",
-            text: "Predicts Metro station platforms will saturate within 8 mins of final whistle. Demands staggered egress."
-          },
-          {
-            agentName: "Operations Agent",
-            role: "Egress Manager",
-            icon: Activity,
-            color: "text-sky-400 stroke-sky-500",
-            bgHighlight: "bg-sky-500/10 border-sky-500/30",
-            text: "Locks laser show entertainment post-match; initiates free transit credit campaign to hold 30% of fans inside."
-          },
-          {
-            agentName: "Volunteer Agent",
-            role: "Field Marshals",
-            icon: Shield,
-            color: "text-amber-400 stroke-amber-500",
-            bgHighlight: "bg-amber-500/10 border-amber-500/30",
-            text: "Deploys exit marshals with glow wands to funnel supporters toward under-utilized Bus Loops."
-          },
-          {
-            agentName: "Fan Agent",
-            role: "Bypass GPS Routing",
-            icon: Users,
-            color: "text-teal-400 stroke-teal-500",
-            bgHighlight: "bg-teal-500/10 border-teal-500/30",
-            text: "Pushes dynamic transit cards & schedules rideshares dynamically with integrated GPS delay warnings."
-          },
-          {
-            agentName: "Sustainability Agent",
-            role: "Carbon Management",
-            icon: LeafIcon,
-            color: "text-emerald-400 stroke-emerald-500",
-            bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
-            text: "Mitigates vehicle idling. Organizes smart electric shuttle buses directly matching real-time egress flow rate."
-          }
-        ]
-      };
-    }
-
-    // 4. Walkthrough step 5: Rain storm
-    if (activeStepId === 5) {
-      return {
-        title: "Dynamic Rainstorm Mitigation Loop",
-        description: "Coordinating structure, safety, and comfort on microclimate alert",
-        nodes: [
-          {
-            agentName: "Event Agent",
-            role: "Microclimate Alert",
-            icon: Sparkles,
-            color: "text-rose-400 stroke-rose-500",
-            bgHighlight: "bg-rose-500/10 border-rose-500/30",
-            text: "Forecasts storm impact in 3 mins. Flags high risk of concourse slips and seating water damage."
-          },
-          {
-            agentName: "Operations Agent",
-            role: "Structural Action",
-            icon: Activity,
-            color: "text-sky-400 stroke-sky-500",
-            bgHighlight: "bg-sky-500/10 border-sky-500/30",
-            text: "Initiates automatic closure of the stadium retractable roof. Syncs HVAC concourse ventilation."
-          },
-          {
-            agentName: "Volunteer Agent",
-            role: "Safety Dispatch",
-            icon: Shield,
-            color: "text-amber-400 stroke-amber-500",
-            bgHighlight: "bg-amber-500/10 border-amber-500/30",
-            text: "Dispatches volunteers to lay entrance mats & distribute dry stadium blankets to families."
-          },
-          {
-            agentName: "Fan Agent",
-            role: "In-App Guidance",
-            icon: Users,
-            color: "text-teal-400 stroke-teal-500",
-            bgHighlight: "bg-teal-500/10 border-teal-500/30",
-            text: "Routes fans away from open decks; highlights dry indoor family lounges and food zones."
-          },
-          {
-            agentName: "Sustainability Agent",
-            role: "Resource Capture",
-            icon: LeafIcon,
-            color: "text-emerald-400 stroke-emerald-500",
-            bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
-            text: "Diverts roof rain-gutter runoff straight into greywater recycling storage, saving 42k liters."
-          }
-        ]
-      };
-    }
-
-    // 5. Walkthrough steps 6-7: Medical Incident Level 1
-    if (activeStepId === 6 || activeStepId === 7) {
-      return {
-        title: "Medical Emergency Dispatch Integration",
-        description: "How a medical report triggers a cascade of safety, logistics, and fan guidance solutions",
-        nodes: [
-          {
-            agentName: "Event / Sec Agent",
-            role: "Incident Ingestor",
-            icon: ShieldAlert,
-            color: "text-rose-400 stroke-rose-500",
-            bgHighlight: "bg-rose-500/10 border-rose-500/30",
-            text: "Ingests report of a fainted fan in Section 104. Pinpoints coordinates and predicts responder arrival."
-          },
-          {
-            agentName: "Operations Agent",
-            role: "Logistical Control",
-            icon: Activity,
-            color: "text-sky-400 stroke-sky-500",
-            bgHighlight: "bg-sky-500/10 border-sky-500/30",
-            text: "Slows down Escalator 4 near Section 104 to prevent spectator backpressure from crowding the site."
-          },
-          {
-            agentName: "Volunteer Agent",
-            role: "Emergency Route",
-            icon: Shield,
-            color: "text-amber-400 stroke-amber-500",
-            bgHighlight: "bg-amber-500/10 border-amber-500/30",
-            text: "Dispatches nearest volunteer Carlos Ramos with AED kit. Clears emergency ambulance access gate."
-          },
-          {
-            agentName: "Fan Agent",
-            role: "Reroute Guidance",
-            icon: Users,
-            color: "text-teal-400 stroke-teal-500",
-            bgHighlight: "bg-teal-500/10 border-teal-500/30",
-            text: "Alters in-app navigation routes for surrounding fans to use stairs B instead of congested corridor C."
-          },
-          {
-            agentName: "Sustainability Agent",
-            role: "EV Pre-Dispatch",
-            icon: LeafIcon,
-            color: "text-emerald-400 stroke-emerald-500",
-            bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
-            text: "Diverts smart electric medical buggies along emission-free paths to ensure quiet, safe evacuation."
-          }
-        ]
-      };
-    }
-
-    // Default Walkthrough Gate Congestion (Steps 1-3)
-    return {
-      title: "Gate Congestion & Fan Redirection Cascade",
-      description: "Resolving Gate A's 28-minute wait time bottleneck through multi-agent collaboration",
-      nodes: [
-        {
-          agentName: "Event Agent",
-          role: "Predicts Backlog",
-          icon: Sparkles,
-          color: "text-rose-400 stroke-rose-500",
-          bgHighlight: "bg-rose-500/10 border-rose-500/30",
-          text: "Predicts Gate A queue will grow by 420 people in 12 mins. Identifies severe entry delays."
-        },
-        {
-          agentName: "Operations Agent",
-          role: "Dynamic Signage",
-          icon: Activity,
-          color: "text-sky-400 stroke-sky-500",
-          bgHighlight: "bg-sky-500/10 border-sky-500/30",
-          text: "Locks Dynamic Overhead signs at North entrance to 'Diverted Gate D' (currently under-utilized)."
-        },
-        {
-          agentName: "Volunteer Agent",
-          role: "Staff Redirection",
-          icon: Shield,
-          color: "text-amber-400 stroke-amber-500",
-          bgHighlight: "bg-amber-500/10 border-amber-500/30",
-          text: "Instructs Kenji Takahashi at Gate A plaza to physically steer late arrivals around to the East wing."
-        },
-        {
-          agentName: "Fan Agent",
-          role: "Bypass App GPS",
-          icon: Users,
-          color: "text-teal-400 stroke-teal-500",
-          bgHighlight: "bg-teal-500/10 border-teal-500/30",
-          text: "Pushes interactive bypass routes directly to supporters' mobile devices, saving them 24 mins."
-        },
-        {
-          agentName: "Sustainability Agent",
-          role: "Power Conservation",
-          icon: LeafIcon,
-          color: "text-emerald-400 stroke-emerald-500",
-          bgHighlight: "bg-emerald-500/10 border-emerald-500/30",
-          text: "Reduces dynamic display energy use based on local ambient light. Minimizes queue heat signatures."
-        }
-      ]
-    };
-  };
-
-  const chain = getCollaborationChain();
+  const chain = getCollaborationChain(activeStepId, activeMatchEvent);
 
   return (
     <div className="bg-slate-950/80 border border-slate-850 rounded-xl p-4.5 mb-4 font-sans relative overflow-hidden" id="coagent-collab-flow">

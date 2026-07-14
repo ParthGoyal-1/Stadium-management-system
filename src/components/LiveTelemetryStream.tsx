@@ -228,7 +228,7 @@ const LiveTelemetryStream = React.memo(function LiveTelemetryStream({
         {/* Controls */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setIsPlaying(!isPlaying)} aria-label={isPlaying ? "Pause Stream" : "Play Stream"}
+            onClick={() => setIsPlaying(!isPlaying)}
             className={`p-1 px-2.5 rounded-lg border text-[10px] font-semibold flex items-center gap-1 transition ${
               isPlaying 
                 ? "bg-slate-950 hover:bg-slate-850 border-slate-800 text-slate-300"

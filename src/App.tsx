@@ -15,8 +15,8 @@ import { useWalkthrough } from "./hooks/useWalkthrough";
 // Lazy loaded modules for performance optimization
 const FanApp = lazy(() => import("./components/FanApp"));
 const VolunteerApp = lazy(() => import("./components/VolunteerApp"));
+const AppGuidebook = lazy(() => import("./components/AppGuidebook"));
 import OrganizerDashboard from "./components/OrganizerDashboard";
-import AppGuidebook from "./components/AppGuidebook";
 
 import { Shield, Compass, Users, Cloud, Clock, CheckCircle2, AlertTriangle, Info, Moon, Sun, Settings, Check, X, Accessibility, Navigation, MessageSquare, Zap, Activity, BookOpen } from "lucide-react";
 
@@ -226,34 +226,36 @@ export default function App() {
                       <div className="grid grid-cols-2 gap-2">
                         {/* Pure Dark Option */}
                         <button
+                          type="button"
                           onClick={() => {
                             setTheme("dark");
                             addSystemNotification("Switched to Pure Dark Theme", "info");
                           }}
-                          className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition duration-200 cursor-pointer w-full ${
+                          className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition duration-200 cursor-pointer w-full focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none ${
                             theme === "dark"
                               ? "bg-teal-500/10 border-teal-500/40 text-teal-400 shadow-sm shadow-teal-500/5"
                               : "bg-slate-950/40 border-slate-850 hover:border-slate-800 text-slate-400 hover:text-slate-200"
                           }`}
                         >
-                          <Moon className="w-3.5 h-3.5 flex-shrink-0" />
+                          <Moon className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
                           <div className="text-xs font-medium">Pure Dark</div>
                           {theme === "dark" && <Check className="w-3.5 h-3.5 ml-auto text-teal-400 flex-shrink-0" />}
                         </button>
 
                         {/* Modern Light Option */}
                         <button
+                          type="button"
                           onClick={() => {
                             setTheme("light");
                             addSystemNotification("Switched to Modern Perfect Light Theme", "info");
                           }}
-                          className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition duration-200 cursor-pointer w-full ${
+                          className={`flex items-center gap-1.5 p-2 rounded-xl border text-left transition duration-200 cursor-pointer w-full focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none ${
                             theme === "light"
                               ? "bg-teal-500/10 border-teal-500/40 text-teal-400 shadow-sm shadow-teal-500/5"
                               : "bg-slate-950/40 border-slate-850 hover:border-slate-800 text-slate-400 hover:text-slate-200"
                           }`}
                         >
-                          <Sun className="w-3.5 h-3.5 flex-shrink-0 text-amber-500" />
+                          <Sun className="w-3.5 h-3.5 flex-shrink-0 text-amber-500" aria-hidden="true" />
                           <div className="text-xs font-medium">Perfect Light</div>
                           {theme === "light" && <Check className="w-3.5 h-3.5 ml-auto text-teal-400 flex-shrink-0" />}
                         </button>
@@ -266,6 +268,7 @@ export default function App() {
                       <div className="space-y-1.5 max-h-64 overflow-y-auto pr-1 scrollbar-thin">
                         {/* Supporter App Mode */}
                         <button
+                          type="button"
                           onClick={() => {
                             setActiveRole("fan");
                             setPendingRole(null);
@@ -273,13 +276,13 @@ export default function App() {
                             setPasswordError(null);
                             addSystemNotification("Switched to Supporter Interface.", "info");
                           }}
-                          className={`w-full flex items-start gap-3 p-2 rounded-xl border text-left transition duration-200 cursor-pointer ${
+                          className={`w-full flex items-start gap-3 p-2 rounded-xl border text-left transition duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none ${
                             activeRole === "fan" && !pendingRole
                               ? "bg-teal-500/10 border-teal-500/40 text-teal-400 shadow-sm shadow-teal-500/5"
                               : "bg-slate-950/40 border-slate-850 hover:border-slate-800 text-slate-400 hover:text-slate-200"
                           }`}
                         >
-                          <Users className="w-4 h-4 mt-0.5 flex-shrink-0 text-teal-400" />
+                          <Users className="w-4 h-4 mt-0.5 flex-shrink-0 text-teal-400" aria-hidden="true" />
                           <div className="flex-1 min-w-0">
                             <div className="text-xs font-semibold">Supporter App</div>
                             <div className="text-[10px] text-slate-500 mt-0.5 leading-relaxed break-words">
@@ -291,6 +294,7 @@ export default function App() {
 
                         {/* Volunteer App Mode */}
                         <button
+                          type="button"
                           onClick={() => {
                             if (activeRole === "volunteer") {
                               addSystemNotification("Already in Volunteer Portal.", "info");
@@ -300,13 +304,13 @@ export default function App() {
                             setPasswordInput("");
                             setPasswordError(null);
                           }}
-                          className={`w-full flex items-start gap-3 p-2 rounded-xl border text-left transition duration-200 cursor-pointer ${
+                          className={`w-full flex items-start gap-3 p-2 rounded-xl border text-left transition duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none ${
                             activeRole === "volunteer" || pendingRole === "volunteer"
                               ? "bg-sky-500/10 border-sky-500/40 text-sky-400 shadow-sm shadow-sky-500/5"
                               : "bg-slate-950/40 border-slate-850 hover:border-slate-800 text-slate-400 hover:text-slate-200"
                           }`}
                         >
-                          <Shield className="w-4 h-4 mt-0.5 flex-shrink-0 text-sky-400" />
+                          <Shield className="w-4 h-4 mt-0.5 flex-shrink-0 text-sky-400" aria-hidden="true" />
                           <div className="flex-1 min-w-0">
                             <div className="text-xs font-semibold">Volunteer Portal</div>
                             <div className="text-[10px] text-slate-500 mt-0.5 leading-relaxed break-words">
@@ -318,6 +322,7 @@ export default function App() {
 
                         {/* Organizer Cockpit Mode */}
                         <button
+                          type="button"
                           onClick={() => {
                             if (activeRole === "organizer") {
                               addSystemNotification("Already in Organizer Cockpit.", "info");
@@ -327,13 +332,13 @@ export default function App() {
                             setPasswordInput("");
                             setPasswordError(null);
                           }}
-                          className={`w-full flex items-start gap-3 p-2 rounded-xl border text-left transition duration-200 cursor-pointer ${
+                          className={`w-full flex items-start gap-3 p-2 rounded-xl border text-left transition duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 outline-none ${
                             activeRole === "organizer" || pendingRole === "organizer"
                               ? "bg-amber-500/10 border-amber-500/40 text-amber-500 shadow-sm shadow-amber-500/5"
                               : "bg-slate-950/40 border-slate-850 hover:border-slate-800 text-slate-400 hover:text-slate-200"
                           }`}
                         >
-                          <Compass className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" />
+                          <Compass className="w-4 h-4 mt-0.5 flex-shrink-0 text-amber-500" aria-hidden="true" />
                           <div className="flex-1 min-w-0">
                             <div className="text-xs font-semibold">Organizer Cockpit</div>
                             <div className="text-[10px] text-slate-500 mt-0.5 leading-relaxed break-words">
@@ -421,49 +426,61 @@ export default function App() {
       {/* FAN MODE SUB-NAVIGATION TABS */}
       {activeRole === "fan" && (
         <div className="max-w-7xl w-full mx-auto px-6 pt-6">
-          <div className="bg-slate-900/60 border border-slate-800 p-1 rounded-2xl flex flex-wrap gap-1 shadow-lg backdrop-blur-md">
+          <div className="bg-slate-900/60 border border-slate-800 p-1 rounded-2xl flex flex-wrap gap-1 shadow-lg backdrop-blur-md" role="tablist" aria-label="Supporter features">
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeFanTab === 1}
               onClick={() => setActiveFanTab(1)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeFanTab === 1
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Compass className="w-4 h-4" />
+              <Compass className="w-4 h-4" aria-hidden="true" />
               <span>1. Tour & Telemetry</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeFanTab === 2}
               onClick={() => setActiveFanTab(2)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeFanTab === 2
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Navigation className="w-4 h-4" />
+              <Navigation className="w-4 h-4" aria-hidden="true" />
               <span>2. AI Smart Advisory</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeFanTab === 3}
               onClick={() => setActiveFanTab(3)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeFanTab === 3
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Accessibility className="w-4 h-4" />
+              <Accessibility className="w-4 h-4" aria-hidden="true" />
               <span>3. Inclusive & Eco</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeFanTab === 4}
               onClick={() => setActiveFanTab(4)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeFanTab === 4
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <MessageSquare className="w-4 h-4" />
+              <MessageSquare className="w-4 h-4" aria-hidden="true" />
               <span>4. Multilingual Copilot</span>
             </button>
           </div>
@@ -473,38 +490,47 @@ export default function App() {
       {/* VOLUNTEER MODE SUB-NAVIGATION TABS */}
       {activeRole === "volunteer" && (
         <div className="max-w-7xl w-full mx-auto px-6 pt-6">
-          <div className="bg-slate-900/60 border border-slate-800 p-1 rounded-2xl flex flex-wrap gap-1 shadow-lg backdrop-blur-md">
+          <div className="bg-slate-900/60 border border-slate-800 p-1 rounded-2xl flex flex-wrap gap-1 shadow-lg backdrop-blur-md" role="tablist" aria-label="Volunteer portal operations">
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeVolunteerTab === 1}
               onClick={() => setActiveVolunteerTab(1)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeVolunteerTab === 1
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Compass className="w-4 h-4" />
+              <Compass className="w-4 h-4" aria-hidden="true" />
               <span>1. Tour & Telemetry</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeVolunteerTab === 2}
               onClick={() => setActiveVolunteerTab(2)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeVolunteerTab === 2
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Users className="w-4 h-4" />
+              <Users className="w-4 h-4" aria-hidden="true" />
               <span>2. Duty & Dispatch</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeVolunteerTab === 3}
               onClick={() => setActiveVolunteerTab(3)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeVolunteerTab === 3
                   ? "bg-teal-500 text-slate-950 shadow-md shadow-teal-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <MessageSquare className="w-4 h-4" />
+              <MessageSquare className="w-4 h-4" aria-hidden="true" />
               <span>3. Logger & Copilot</span>
             </button>
           </div>
@@ -514,38 +540,47 @@ export default function App() {
       {/* ORGANIZER MODE SUB-NAVIGATION TABS */}
       {activeRole === "organizer" && (
         <div className="max-w-7xl w-full mx-auto px-6 pt-6">
-          <div className="bg-slate-900/60 border border-slate-800 p-1 rounded-2xl flex flex-wrap gap-1 shadow-lg backdrop-blur-md">
+          <div className="bg-slate-900/60 border border-slate-800 p-1 rounded-2xl flex flex-wrap gap-1 shadow-lg backdrop-blur-md" role="tablist" aria-label="Organizer control panels">
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeOrganizerTab === 1}
               onClick={() => setActiveOrganizerTab(1)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeOrganizerTab === 1
                   ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Compass className="w-4 h-4" />
+              <Compass className="w-4 h-4" aria-hidden="true" />
               <span>1. Tour & Telemetry</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeOrganizerTab === 2}
               onClick={() => setActiveOrganizerTab(2)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeOrganizerTab === 2
                   ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Zap className="w-4 h-4" />
+              <Zap className="w-4 h-4" aria-hidden="true" />
               <span>2. Live Operations</span>
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={activeOrganizerTab === 3}
               onClick={() => setActiveOrganizerTab(3)}
-              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer ${
+              className={`flex-1 min-w-[150px] flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold tracking-wide transition duration-300 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 outline-none ${
                 activeOrganizerTab === 3
                   ? "bg-amber-500 text-slate-950 shadow-md shadow-amber-500/15"
                   : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/40"
               }`}
             >
-              <Activity className="w-4 h-4" />
+              <Activity className="w-4 h-4" aria-hidden="true" />
               <span>3. Predictive Analytics</span>
             </button>
           </div>

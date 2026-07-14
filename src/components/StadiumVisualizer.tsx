@@ -10,6 +10,26 @@ interface StadiumVisualizerProps {
   onSelectGate: (gateId: string | null) => void;
 }
 
+const getCrowdColor = (level: string) => {
+  switch (level) {
+    case "Low": return "fill-emerald-500/20 stroke-emerald-500 hover:fill-emerald-500/30";
+    case "Medium": return "fill-amber-500/20 stroke-amber-500 hover:fill-amber-500/30";
+    case "High": return "fill-orange-500/35 stroke-orange-500 hover:fill-orange-500/45";
+    case "Critical": return "fill-rose-600/50 stroke-rose-600 hover:fill-rose-600/60";
+    default: return "fill-slate-700/20 stroke-slate-500 hover:fill-slate-700/30";
+  }
+};
+
+const getCrowdbadge = (level: string) => {
+  switch (level) {
+    case "Low": return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+    case "Medium": return "bg-amber-500/10 text-amber-400 border-amber-500/30";
+    case "High": return "bg-orange-500/10 text-orange-400 border-orange-500/30";
+    case "Critical": return "bg-rose-500/10 text-rose-400 border-rose-500/30";
+    default: return "bg-slate-500/10 text-slate-400 border-slate-500/30";
+  }
+};
+
 const StadiumVisualizer = React.memo(function StadiumVisualizer({
   state,
   selectedSectorId,
@@ -17,26 +37,6 @@ const StadiumVisualizer = React.memo(function StadiumVisualizer({
   selectedGateId,
   onSelectGate
 }: StadiumVisualizerProps) {
-
-  const getCrowdColor = (level: string) => {
-    switch (level) {
-      case "Low": return "fill-emerald-500/20 stroke-emerald-500 hover:fill-emerald-500/30";
-      case "Medium": return "fill-amber-500/20 stroke-amber-500 hover:fill-amber-500/30";
-      case "High": return "fill-orange-500/35 stroke-orange-500 hover:fill-orange-500/45";
-      case "Critical": return "fill-rose-600/50 stroke-rose-600 hover:fill-rose-600/60";
-      default: return "fill-slate-700/20 stroke-slate-500 hover:fill-slate-700/30";
-    }
-  };
-
-  const getCrowdbadge = (level: string) => {
-    switch (level) {
-      case "Low": return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-      case "Medium": return "bg-amber-500/10 text-amber-400 border-amber-500/30";
-      case "High": return "bg-orange-500/10 text-orange-400 border-orange-500/30";
-      case "Critical": return "bg-rose-500/10 text-rose-400 border-rose-500/30";
-      default: return "bg-slate-500/10 text-slate-400 border-slate-500/30";
-    }
-  };
 
   return (
     <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col h-full relative overflow-hidden" id="stadium-map">

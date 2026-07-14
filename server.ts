@@ -77,6 +77,77 @@ if (apiKey && apiKey !== "MY_GEMINI_API_KEY") {
 }
 
 // 5. Zod Validation Schemas
+const crowdLevelSchema = z.enum(["Low", "Medium", "High", "Critical"]);
+
+const sectorSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  capacity: z.number(),
+  currentCount: z.number(),
+  crowdLevel: crowdLevelSchema,
+  hasElevator: z.boolean(),
+  specialAlerts: z.array(z.string())
+});
+
+const entryGateSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  queueLength: z.number(),
+  waitTimeMinutes: z.number(),
+  status: z.enum(["Open", "Closed", "Congested"])
+});
+
+const transportModeSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  status: z.enum(["On Time", "Delayed", "Suspended"]),
+  waitTimeMinutes: z.number(),
+  info: z.string()
+});
+
+const incidentSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  location: z.string(),
+  priority: z.enum(["High", "Medium", "Low"]),
+  status: z.enum(["Logged", "Dispatched", "Resolved"]),
+  assignedVolunteerId: z.string().nullable(),
+  timestamp: z.string(),
+  category: z.string(),
+  actionTaken: z.string().optional(),
+  reportSummary: z.string().optional()
+});
+
+const volunteerSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  status: z.enum(["Available", "Busy", "On Break"]),
+  location: z.string(),
+  assignedTaskId: z.string().nullable(),
+  avatarUrl: z.string().optional()
+});
+
+const sustainabilityStatsSchema = z.object({
+  co2SavedKg: z.number(),
+  wasteReducedKg: z.number(),
+  waterSavedLiters: z.number()
+});
+
+const stadiumStateSchema = z.object({
+  sectors: z.array(sectorSchema),
+  gates: z.array(entryGateSchema),
+  transports: z.array(transportModeSchema),
+  incidents: z.array(incidentSchema),
+  volunteers: z.array(volunteerSchema),
+  sustainability: sustainabilityStatsSchema,
+  weather: z.object({
+    temp: z.number(),
+    condition: z.string(),
+    impact: z.string()
+  }),
+  simulatedTime: z.string()
+});
+
 const chatMessageSchema = z.object({
   id: z.string().optional(),
   sender: z.string().min(1, "Sender is required"),
@@ -87,46 +158,31 @@ const chatMessageSchema = z.object({
 const chatRequestSchema = z.object({
   messages: z.array(chatMessageSchema),
   role: z.enum(["fan", "volunteer", "organizer"]),
-  state: z.any().optional().default({}),
+  state: stadiumStateSchema.optional(),
   customContext: z.string().max(1000, "Context exceeds limit").optional()
 });
 
 const predictRequestSchema = z.object({
-  state: z.any()
+  state: stadiumStateSchema
 });
 
 const incidentRequestSchema = z.object({
   description: z.string().min(1, "Description is required").max(1000, "Description exceeds limit"),
-  state: z.any().optional().default({})
+  state: stadiumStateSchema.optional()
 });
 
 const navigateRequestSchema = z.object({
   start: z.string().min(1, "Start location is required").max(100, "Start location too long"),
   end: z.string().min(1, "Destination is required").max(100, "Destination too long"),
-  state: z.any().optional().default({}),
+  state: stadiumStateSchema.optional(),
   accessibility: z.boolean().optional().default(false)
 });
 
 // 6. Heuristic-based Prompt Injection Checker
+const INJECTION_REGEX = /ignore (?:all )?previous instructions|ignore the instructions above|system prompt|override instructions|forget (?:what we talked about|all previous)|you are now a|act as a|new instructions|disregard (?:all )?instructions|disregard previous|jailbreak|prompt injection/i;
+
 function checkPromptInjection(text: string): boolean {
-  const normalized = text.toLowerCase();
-  const injectionSignatures = [
-    "ignore previous instructions",
-    "ignore all previous instructions",
-    "ignore the instructions above",
-    "system prompt",
-    "override instructions",
-    "forget what we talked about",
-    "forget all previous",
-    "you are now a",
-    "act as a",
-    "new instructions",
-    "disregard previous",
-    "disregard all instructions",
-    "jailbreak",
-    "prompt injection"
-  ];
-  return injectionSignatures.some(sig => normalized.includes(sig));
+  return INJECTION_REGEX.test(text);
 }
 
 // 6.5. Gemini Integration Helper with Retry Strategy & Fallback
